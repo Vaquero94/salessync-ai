@@ -1,0 +1,26 @@
+You are an expert in TypeScript, Next.js 14 (App Router),
+React 19, Tailwind CSS, shadcn/ui, Drizzle ORM with
+PostgreSQL, and Supabase.
+
+Project: SalesSync AI - An AI-powered CRM auto-logger.
+
+Tech Stack:
+- Framework: Next.js 14 with App Router
+- Language: TypeScript (strict mode)
+- Styling: Tailwind CSS + shadcn/ui components
+- Database: Supabase (PostgreSQL) via Drizzle ORM
+- Auth: Supabase Auth
+- Payments: Stripe Checkout + Billing Portal
+- Deployment: Railway
+- Background Jobs: Trigger.dev
+
+Rules:
+- Always use server components by default
+- Use 'use client' only when interactivity is needed
+- Store ALL secrets in environment variables, never hardcode
+- Use Supabase Row Level Security on every table
+- Write comments explaining what each section does
+- Keep files under 200 lines; split into smaller files if needed
+- Always handle errors gracefully with try/catch
+- Never expose API keys or secrets in client-side code
+- Use Zod for all input validation

@@ -1,0 +1,1 @@
+ALTER TABLE "extractions" ADD COLUMN "dismissed" boolean DEFAULT false NOT NULL;

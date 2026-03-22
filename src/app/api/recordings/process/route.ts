@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { ensureUserExists } from "@/lib/ensure-user";
 import { createDeepgramClient } from "@/lib/deepgram";
 import { createOpenAIClient } from "@/lib/openai";
 import { eq } from "drizzle-orm";
@@ -27,6 +29,22 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
+      );
+    }
+
+    await ensureUserExists(user);
+
+    const admin = createAdminClient();
+    const { data: appUser } = await admin
+      .from("users")
+      .select("subscription_status")
+      .eq("id", user.id)
+      .single();
+    const status = appUser?.subscription_status ?? "free";
+    if (status === "free") {
+      return NextResponse.json(
+        { error: "Active subscription required. Please subscribe at /pricing" },
+        { status: 403 }
       );
     }
 

@@ -4,13 +4,21 @@ import Link from "next/link";
 import { Clock, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { ReviewCard } from "@/components/ReviewCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { SimulateRecordingButton } from "./SimulateRecordingButton";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
+
+  const { data: appUser } = await supabase
+    .from("users")
+    .select("subscription_status")
+    .eq("id", user.id)
+    .single();
+  const subscriptionStatus = appUser?.subscription_status ?? "free";
+  const hasActiveSubscription = subscriptionStatus !== "free";
 
   const { data: recordings } = await supabase
     .from("recordings")
@@ -119,16 +127,24 @@ export default async function DashboardPage() {
           <CardHeader>
             <CardTitle>Process a recording</CardTitle>
             <p className="text-sm text-muted-foreground">
-              Send an audio URL to the process API to transcribe and extract data
+              Simulate a Recall.ai-style webhook or send an audio URL to transcribe and extract
             </p>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
+            {hasActiveSubscription ? (
+              <SimulateRecordingButton />
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Subscribe to a plan to process recordings.
+                <Link href="/pricing" className="ml-2 font-medium text-primary underline underline-offset-4">
+                  View pricing →
+                </Link>
+              </p>
+            )}
             <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-xs">
               {`POST /api/recordings/process
-Content-Type: application/json
-Authorization: Bearer <session>
-
-{ "audioUrl": "https://...", "source": "zoom" }`}
+{ "audioUrl": "https://...", "source": "zoom" }
+# Or Recall.ai payload: { "recording": { "url": "..." } }`}
             </pre>
           </CardContent>
         </Card>

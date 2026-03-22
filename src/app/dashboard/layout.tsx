@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { UserMenu } from "@/components/user-menu";
+import { ensureUserExists } from "@/lib/ensure-user";
 
 export default async function DashboardLayout({
   children,
@@ -13,6 +14,8 @@ export default async function DashboardLayout({
   if (!user) {
     redirect("/login");
   }
+
+  await ensureUserExists(user);
 
   return (
     <div className="flex min-h-screen flex-col">

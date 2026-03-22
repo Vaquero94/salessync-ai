@@ -20,7 +20,8 @@ function getRedirectUri(request: Request): string {
 
 function verifyState(stateB64: string): string | null {
   try {
-    const secret = process.env.CRM_ENCRYPTION_KEY ?? process.env.ENCRYPTION_KEY ?? "fallback-change-me";
+    const secret = process.env.CRM_ENCRYPTION_KEY ?? process.env.ENCRYPTION_KEY;
+    if (!secret) return null;
     const { payload, sig } = JSON.parse(Buffer.from(stateB64, "base64url").toString("utf8"));
     const expectedSig = createHmac("sha256", secret).update(payload).digest("hex");
     if (sig !== expectedSig) return null;

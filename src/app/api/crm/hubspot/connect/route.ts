@@ -28,7 +28,8 @@ function getRedirectUri(request: Request): string {
 }
 
 function createState(userId: string): string {
-  const secret = process.env.CRM_ENCRYPTION_KEY ?? process.env.ENCRYPTION_KEY ?? "fallback-change-me";
+  const secret = process.env.CRM_ENCRYPTION_KEY ?? process.env.ENCRYPTION_KEY;
+  if (!secret) throw new Error("CRM_ENCRYPTION_KEY or ENCRYPTION_KEY required for OAuth state");
   const nonce = randomBytes(16).toString("hex");
   const exp = Date.now() + 10 * 60 * 1000; // 10 min
   const payload = `${userId}:${nonce}:${exp}`;

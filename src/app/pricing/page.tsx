@@ -16,7 +16,7 @@ import { BillingPortalButton } from "./billing-portal-button";
 const PLANS = [
   {
     id: "starter",
-    name: "SalesSync Starter",
+    name: "Zero Entry AI Starter",
     price: 19,
     description: "Perfect for individuals getting started with AI-powered CRM logging",
     features: [
@@ -29,7 +29,7 @@ const PLANS = [
   },
   {
     id: "pro",
-    name: "SalesSync Pro",
+    name: "Zero Entry AI Pro",
     price: 29,
     description: "For teams who need unlimited logging and advanced features",
     features: [

@@ -22,7 +22,7 @@ export default async function DashboardLayout({
       <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b bg-background px-4">
         <div className="flex items-center gap-4">
           <a href="/dashboard" className="font-semibold">
-            SalesSync
+            Zero Entry AI
           </a>
           <a
             href="/pricing"

@@ -1,6 +1,6 @@
 # End-to-End Testing Guide
 
-Follow these flows to test SalesSync AI end-to-end. **Prerequisites:** `npm run dev`, `.env.local` configured.
+Follow these flows to test Zero Entry AI end-to-end. **Prerequisites:** `npm run dev`, `.env.local` configured.
 
 ---
 
@@ -15,7 +15,7 @@ Follow these flows to test SalesSync AI end-to-end. **Prerequisites:** `npm run 
 ### Expected
 
 - You land on **http://localhost:3000/dashboard**
-- Header shows **SalesSync**, **Pricing**, **Settings**, and your user menu
+- Header shows **Zero Entry AI**, **Pricing**, **Settings**, and your user menu
 - You see "Welcome back" and "0 pending reviews"
 - "Recent recordings" is empty
 - You see "Process a recording" with a "Simulate recording" button (or "Subscribe to a plan" if you haven’t subscribed)
@@ -41,7 +41,7 @@ Use Stripe **test** keys:
 ### Steps
 
 1. Open **http://localhost:3000/pricing**
-2. Click **"Subscribe to SalesSync Pro"**
+2. Click **"Subscribe to Zero Entry AI Pro"**
 3. On Stripe Checkout, use test card **4242 4242 4242 4242**
 4. Use any future expiry (e.g. 12/34), any 3-digit CVC, any billing details
 5. Click **Pay**

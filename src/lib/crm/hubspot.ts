@@ -172,7 +172,7 @@ async function createDeal(
   if (props.dealstage) properties.dealstage = props.dealstage;
   if (props.closedate) properties.closedate = props.closedate;
 
-  if (!properties.dealname) properties.dealname = "Deal from SalesSync";
+  if (!properties.dealname) properties.dealname = "Deal from Zero Entry AI";
 
   const body: { properties: Record<string, string>; associations?: object[] } = {
     properties,
@@ -337,7 +337,7 @@ export async function pushExtractionToHubSpot(
     const dealId = await createDeal(accessToken, dealProps, dealAssociations);
 
     // Create note with summary
-    const summary = extraction.summary?.trim() || "Call logged from SalesSync.";
+    const summary = extraction.summary?.trim() || "Call logged from Zero Entry AI.";
     const sentiment = extraction.sentiment?.trim();
     const noteBody = [summary]
       .concat(sentiment ? [`Sentiment: ${sentiment}`] : [])

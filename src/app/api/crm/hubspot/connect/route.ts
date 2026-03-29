@@ -10,15 +10,11 @@ import { createHmac, randomBytes } from "node:crypto";
 
 const HUBSPOT_AUTH_URL = "https://app.hubspot.com/oauth/authorize";
 
-// Scopes: contacts, deals, notes (read + write)
 const SCOPES = [
-  "oauth",
   "crm.objects.contacts.read",
   "crm.objects.contacts.write",
   "crm.objects.deals.read",
   "crm.objects.deals.write",
-  "crm.objects.notes.read",
-  "crm.objects.notes.write",
 ].join(" ");
 
 function getRedirectUri(request: Request): string {

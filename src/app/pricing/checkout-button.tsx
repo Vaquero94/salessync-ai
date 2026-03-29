@@ -20,12 +20,21 @@ export function CheckoutButton({ planId, planName }: CheckoutButtonProps) {
         body: JSON.stringify({ planId }),
       });
 
+      const data = await res.json().catch(() => ({}));
+
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error ?? "Failed to create checkout session");
+        console.error("[checkout] API error:", data);
+        const msg =
+          data.stripeMessage ??
+          data.error ??
+          "Failed to create checkout session";
+        const detail = data.stripeCode
+          ? ` (${data.stripeType}: ${data.stripeCode}${data.stripeParam ? ` param=${data.stripeParam}` : ""})`
+          : "";
+        throw new Error(`${msg}${detail}`);
       }
 
-      const { url } = await res.json();
+      const { url } = data;
       if (url) window.location.href = url;
     } catch (err) {
       console.error(err);

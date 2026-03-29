@@ -103,9 +103,12 @@ export async function POST(request: Request) {
       case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
         const customerId = subscription.customer as string;
+        const isActive =
+          subscription.status === "active" || subscription.status === "trialing";
         const item = subscription.items.data[0];
         const priceId = item?.price.id;
-        const status = PLAN_BY_PRICE_ID[priceId ?? ""] ?? "starter";
+        const status =
+          isActive ? (PLAN_BY_PRICE_ID[priceId ?? ""] ?? "starter") : "free";
         const periodEnd = item?.current_period_end;
         const endDate = periodEnd
           ? new Date(periodEnd * 1000).toISOString()
@@ -115,7 +118,7 @@ export async function POST(request: Request) {
           .from("users")
           .update({
             subscription_status: status,
-            ...(endDate && { subscription_end_date: endDate }),
+            subscription_end_date: status === "free" ? null : (endDate ?? null),
           })
           .eq("stripe_customer_id", customerId);
         break;

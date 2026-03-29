@@ -18,7 +18,7 @@ export default async function DashboardPage() {
     .eq("id", user.id)
     .single();
   const subscriptionStatus = appUser?.subscription_status ?? "free";
-  const hasActiveSubscription = subscriptionStatus !== "free";
+  const hasActiveSubscription = subscriptionStatus === "starter" || subscriptionStatus === "pro";
 
   const { data: recordings } = await supabase
     .from("recordings")

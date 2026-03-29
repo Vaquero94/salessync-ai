@@ -116,7 +116,6 @@ export async function POST(request: Request) {
         message: err.message,
         statusCode: err.statusCode,
         raw: err.raw,
-        detail: err.detail,
         param: err.param,
       });
       return NextResponse.json(

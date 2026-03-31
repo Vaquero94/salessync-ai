@@ -13,9 +13,11 @@ import { createHmac } from "node:crypto";
 
 const HUBSPOT_TOKEN_URL = "https://api.hubapi.com/oauth/v1/token";
 
-function getRedirectUri(request: Request): string {
-  const url = new URL(request.url);
-  return `${url.origin}/api/crm/hubspot/callback`;
+function getRedirectUri(): string {
+  return (
+    process.env.HUBSPOT_REDIRECT_URI ??
+    "https://zeroentryai.co/api/crm/hubspot/callback"
+  );
 }
 
 function verifyState(stateB64: string): string | null {
@@ -61,7 +63,7 @@ export async function GET(request: Request) {
       return NextResponse.redirect(new URL("/dashboard/settings?error=hubspot_not_configured", request.url));
     }
 
-    const redirectUri = getRedirectUri(request);
+    const redirectUri = getRedirectUri();
     const body = new URLSearchParams({
       grant_type: "authorization_code",
       client_id: clientId,

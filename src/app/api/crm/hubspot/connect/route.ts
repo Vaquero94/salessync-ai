@@ -17,10 +17,11 @@ const SCOPES = [
   "crm.objects.deals.write",
 ].join(" ");
 
-function getRedirectUri(request: Request): string {
-  const url = new URL(request.url);
-  const origin = url.origin;
-  return `${origin}/api/crm/hubspot/callback`;
+function getRedirectUri(): string {
+  return (
+    process.env.HUBSPOT_REDIRECT_URI ??
+    "https://zeroentryai.co/api/crm/hubspot/callback"
+  );
 }
 
 function createState(userId: string): string {
@@ -48,7 +49,7 @@ export async function GET(request: Request) {
       return NextResponse.redirect(new URL("/dashboard/settings?error=hubspot_not_configured", request.url));
     }
 
-    const redirectUri = getRedirectUri(request);
+    const redirectUri = getRedirectUri();
     const state = createState(user.id);
 
     const params = new URLSearchParams({

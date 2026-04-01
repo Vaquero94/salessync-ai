@@ -1,30 +1,48 @@
-import { Button } from "@/components/ui/button";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { WaitlistForm } from "./WaitlistForm";
+import Link from "next/link";
 
-export default function Home() {
+async function getWaitlistCount(): Promise<number> {
+  try {
+    const supabase = createAdminClient();
+    const { count } = await supabase
+      .from("waitlist")
+      .select("*", { count: "exact", head: true });
+    return count ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
+export default async function Home() {
+  const count = await getWaitlistCount();
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6 py-16">
       <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 text-center">
-        {/* Hero heading for the core value proposition */}
         <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
           Stop Wasting 5 Hours a Week on CRM Data Entry
         </h1>
 
-        {/* Supporting subtitle that explains the product behavior */}
         <p className="max-w-2xl text-lg text-muted-foreground sm:text-xl">
-          AI auto-logs your calls, emails, and meetings
+          AI auto-logs your calls, emails, and meetings — directly into your CRM.
         </p>
 
-        {/* Primary call-to-action using shadcn/ui button */}
-        <div className="flex gap-4">
-          <Button asChild size="lg">
-            <a href="/signup" aria-label="Start Free Trial">
-              Start Free Trial
-            </a>
-          </Button>
-          <Button asChild variant="outline" size="lg">
-            <a href="/pricing">View Pricing</a>
-          </Button>
-        </div>
+        {count > 0 && (
+          <p className="text-sm font-medium text-muted-foreground">
+            <span className="text-foreground font-semibold">{count.toLocaleString()}</span>{" "}
+            {count === 1 ? "person has" : "people have"} already joined the waitlist.
+          </p>
+        )}
+
+        <WaitlistForm />
+
+        <p className="text-xs text-muted-foreground">
+          Already have an account?{" "}
+          <Link href="/login" className="underline underline-offset-4 hover:text-foreground">
+            Log in
+          </Link>
+        </p>
       </section>
     </main>
   );

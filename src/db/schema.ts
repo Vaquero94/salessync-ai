@@ -115,6 +115,18 @@ export const extractions = pgTable("extractions", {
 });
 
 /**
+ * Waitlist signups from the landing page.
+ */
+export const waitlist = pgTable("waitlist", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+/**
  * Synced emails with AI-extracted data.
  */
 export const emailSyncs = pgTable("email_syncs", {

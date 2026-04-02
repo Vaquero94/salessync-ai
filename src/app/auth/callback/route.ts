@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 /**
- * Handles OAuth callback from Supabase (e.g., Google sign-in).
+ * Handles auth callback from Supabase (email confirmation, magic links).
  * Exchanges code for session and redirects to dashboard.
  */
 export async function GET(request: Request) {

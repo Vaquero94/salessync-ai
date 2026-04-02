@@ -25,12 +25,6 @@ export default async function DashboardLayout({
             Zero Entry AI
           </a>
           <a
-            href="/pricing"
-            className="text-sm text-muted-foreground hover:text-foreground"
-          >
-            Pricing
-          </a>
-          <a
             href="/dashboard/settings"
             className="text-sm text-muted-foreground hover:text-foreground"
           >

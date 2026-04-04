@@ -1,6 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { WaitlistForm } from "./WaitlistForm";
-import Link from "next/link";
 
 async function getWaitlistCount(): Promise<number> {
   try {
@@ -37,12 +36,6 @@ export default async function Home() {
 
         <WaitlistForm />
 
-        <p className="text-xs text-muted-foreground">
-          Already have an account?{" "}
-          <Link href="/login" className="underline underline-offset-4 hover:text-foreground">
-            Log in
-          </Link>
-        </p>
       </section>
     </main>
   );

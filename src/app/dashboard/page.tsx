@@ -1,10 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Clock, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { CheckCircle, XCircle, Loader2, Mic } from "lucide-react";
 import { ReviewCard } from "@/components/ReviewCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SimulateRecordingButton } from "./SimulateRecordingButton";
+import { Button } from "@/components/ui/button";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -36,6 +36,7 @@ export default async function DashboardPage() {
     .order("created_at", { ascending: false });
 
   const pendingCount = pendingExtractions?.length ?? 0;
+  const hasRecordings = (recordings?.length ?? 0) > 0;
 
   function statusIcon(status: string) {
     switch (status) {
@@ -59,6 +60,22 @@ export default async function DashboardPage() {
         </p>
       </div>
 
+      {!hasActiveSubscription && (
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-start gap-3 py-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-medium">Unlock AI call logging</p>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                Upgrade your plan to start logging calls and syncing to your CRM automatically.
+              </p>
+            </div>
+            <Button asChild className="shrink-0">
+              <Link href="/dashboard/settings">Upgrade plan</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       {pendingCount > 0 && (
         <section>
           <h2 className="mb-4 text-lg font-semibold">Pending reviews</h2>
@@ -77,21 +94,17 @@ export default async function DashboardPage() {
 
       <section>
         <h2 className="mb-4 text-lg font-semibold">Recent recordings</h2>
-        <Card>
-          <CardHeader>
-            <CardTitle>Recordings</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Call and meeting recordings with AI extraction status
-            </p>
-          </CardHeader>
-          <CardContent>
-            {!recordings?.length ? (
-              <p className="py-8 text-center text-muted-foreground">
-                No recordings yet. Process a recording via the API to get started.
+        {hasRecordings ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Recordings</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Call and meeting recordings with AI extraction status
               </p>
-            ) : (
+            </CardHeader>
+            <CardContent>
               <div className="space-y-2">
-                {recordings.map((r) => (
+                {recordings!.map((r) => (
                   <div
                     key={r.id}
                     className="flex items-center justify-between rounded-lg border p-3"
@@ -117,37 +130,26 @@ export default async function DashboardPage() {
                   </div>
                 ))}
               </div>
-            )}
-          </CardContent>
-        </Card>
-      </section>
-
-      <section>
-        <Card>
-          <CardHeader>
-            <CardTitle>Process a recording</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Simulate a Recall.ai-style webhook or send an audio URL to transcribe and extract
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {hasActiveSubscription ? (
-              <SimulateRecordingButton />
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Subscribe to a plan to process recordings.
-                <Link href="/pricing" className="ml-2 font-medium text-primary underline underline-offset-4">
-                  View pricing →
-                </Link>
-              </p>
-            )}
-            <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-xs">
-              {`POST /api/recordings/process
-{ "audioUrl": "https://...", "source": "zoom" }
-# Or Recall.ai payload: { "recording": { "url": "..." } }`}
-            </pre>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="border-dashed">
+            <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                <Mic className="h-6 w-6 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="font-medium">Ready to log your first call?</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Connect your meeting tool to get started.
+                </p>
+              </div>
+              <Button asChild variant="outline" className="mt-2">
+                <Link href="/dashboard/settings">Go to Settings</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </section>
     </div>
   );

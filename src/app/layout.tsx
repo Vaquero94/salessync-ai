@@ -10,6 +10,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Zero Entry AI",
   description: "AI auto-logs your calls, emails, and meetings directly into your CRM.",
+  icons: {
+    icon: "/images/icon-gradient.svg",
+  },
 };
 
 export default function RootLayout({
@@ -18,10 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

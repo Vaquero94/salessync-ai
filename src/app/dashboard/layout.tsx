@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { BrandLogo } from "@/components/brand-logo";
 import { UserMenu } from "@/components/user-menu";
 import { ensureUserExists } from "@/lib/ensure-user";
 
@@ -21,9 +22,7 @@ export default async function DashboardLayout({
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b bg-background px-4">
         <div className="flex items-center gap-4">
-          <a href="/dashboard" className="font-semibold">
-            Zero Entry AI
-          </a>
+          <BrandLogo variant="compact" href="/dashboard" priority />
           <a
             href="/dashboard/settings"
             className="text-sm text-muted-foreground hover:text-foreground"

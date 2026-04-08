@@ -9,7 +9,8 @@
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "outline-logos": "node scripts/outline-logo-svgs.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
@@ -42,6 +43,7 @@
     "@types/react-dom": "^18.3.7",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.35",
+    "opentype.js": "^1.3.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

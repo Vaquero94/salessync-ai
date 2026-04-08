@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { BrandLogo } from "@/components/brand-logo";
 import { WaitlistForm } from "./WaitlistForm";
 
 async function getWaitlistCount(): Promise<number> {
@@ -19,6 +20,7 @@ export default async function Home() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6 py-16">
       <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 text-center">
+        <BrandLogo variant="primary" priority />
         <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
           Stop Wasting 5 Hours a Week on CRM Data Entry
         </h1>

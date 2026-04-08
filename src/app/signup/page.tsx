@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { BrandLogo } from "@/components/brand-logo";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -48,77 +49,80 @@ export default function SignupPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-6 py-16">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Create an account</CardTitle>
-          <CardDescription>Enter your details to get started</CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSignup}>
-          <CardContent className="flex flex-col gap-4">
-            {message && (
-              <p
-                className={`text-sm ${message.type === "error" ? "text-destructive" : "text-green-600"}`}
-              >
-                {message.text}
-              </p>
-            )}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="fullName" className="text-sm font-medium">
-                Full name
-              </label>
-              <Input
-                id="fullName"
-                type="text"
-                placeholder="John Doe"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-                disabled={loading}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email
-              </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={loading}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                disabled={loading}
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating account…" : "Sign up"}
-            </Button>
-          </CardContent>
-        </form>
-        <CardFooter className="flex justify-center">
-          <p className="text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
-              Log in
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+      <div className="flex w-full max-w-md flex-col items-center gap-8">
+        <BrandLogo variant="compact" href="/" priority />
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Create an account</CardTitle>
+            <CardDescription>Enter your details to get started</CardDescription>
+          </CardHeader>
+          <form onSubmit={handleSignup}>
+            <CardContent className="flex flex-col gap-4">
+              {message && (
+                <p
+                  className={`text-sm ${message.type === "error" ? "text-destructive" : "text-green-600"}`}
+                >
+                  {message.text}
+                </p>
+              )}
+              <div className="flex flex-col gap-2">
+                <label htmlFor="fullName" className="text-sm font-medium">
+                  Full name
+                </label>
+                <Input
+                  id="fullName"
+                  type="text"
+                  placeholder="John Doe"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                  disabled={loading}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="email" className="text-sm font-medium">
+                  Email
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={loading}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="password" className="text-sm font-medium">
+                  Password
+                </label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  disabled={loading}
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Creating account…" : "Sign up"}
+              </Button>
+            </CardContent>
+          </form>
+          <CardFooter className="flex justify-center">
+            <p className="text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
+                Log in
+              </Link>
+            </p>
+          </CardFooter>
+        </Card>
+      </div>
     </main>
   );
 }

@@ -9,6 +9,11 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
+export const calendarProviderEnum = pgEnum("calendar_provider", [
+  "google",
+  "microsoft",
+]);
+
 // Enums for type-safe column values
 export const subscriptionStatusEnum = pgEnum("subscription_status", [
   "free",
@@ -122,6 +127,21 @@ export const waitlist = pgTable("waitlist", {
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+/**
+ * Recall.ai calendar connections for automatic bot joining.
+ */
+export const calendarConnections = pgTable("calendar_connections", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  recallCalendarId: text("recall_calendar_id").notNull(),
+  calendarProvider: calendarProviderEnum("calendar_provider").notNull(),
+  connectedAt: timestamp("connected_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
 });

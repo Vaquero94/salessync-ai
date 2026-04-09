@@ -1,18 +1,15 @@
 /**
- * Public base URL for OAuth redirect URIs, webhooks, and Stripe return URLs.
- * Prefer env so local vs production matches what you register with providers.
- *
- * Resolution order: NEXT_PUBLIC_APP_URL → NEXTAUTH_URL → request origin → localhost
+ * Public base URL for OAuth redirects, webhooks, and return URLs.
+ * Requires NEXT_PUBLIC_APP_URL or NEXTAUTH_URL — no request-host or localhost fallback.
  */
-export function getPublicAppUrl(requestUrl?: string): string {
+export function getPublicAppUrl(): string {
   const fromEnv =
     process.env.NEXT_PUBLIC_APP_URL?.trim() ||
     process.env.NEXTAUTH_URL?.trim();
-  if (fromEnv) {
-    return fromEnv.replace(/\/$/, "");
+  if (!fromEnv) {
+    throw new Error(
+      "Set NEXT_PUBLIC_APP_URL or NEXTAUTH_URL to your public app origin."
+    );
   }
-  if (requestUrl) {
-    return new URL(requestUrl).origin;
-  }
-  return "http://localhost:3000";
+  return fromEnv.replace(/\/$/, "");
 }

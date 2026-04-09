@@ -11,12 +11,8 @@ import { getCalendarAuthUrl } from "@/lib/recall";
 import { NextResponse } from "next/server";
 import { createHmac, randomBytes } from "node:crypto";
 
-function buildRedirectUri(
-  requestUrl: string,
-  state: string,
-  provider: string
-): string {
-  const appUrl = getPublicAppUrl(requestUrl);
+function buildRedirectUri(state: string, provider: string): string {
+  const appUrl = getPublicAppUrl();
   const uri = new URL(`${appUrl}/api/recall/calendar/callback`);
   uri.searchParams.set("state", state);
   uri.searchParams.set("provider", provider);
@@ -57,7 +53,7 @@ export async function GET(request: Request) {
     }
 
     const state = createState(user.id);
-    const redirectUri = buildRedirectUri(request.url, state, provider);
+    const redirectUri = buildRedirectUri(state, provider);
     const authUrl = await getCalendarAuthUrl(provider, redirectUri);
 
     return NextResponse.redirect(authUrl);

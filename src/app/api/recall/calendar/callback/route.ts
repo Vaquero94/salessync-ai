@@ -74,7 +74,7 @@ export async function GET(request: Request) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    const appUrl = getPublicAppUrl(request.url);
+    const appUrl = getPublicAppUrl();
     const webhookUrl = `${appUrl}/api/recall/webhook`;
 
     // Reconstruct the redirect_uri we passed to Recall.ai (must match exactly)

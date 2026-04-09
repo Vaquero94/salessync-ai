@@ -8,7 +8,7 @@ import { getPublicAppUrl } from "@/lib/app-url";
 import { createClient } from "@/lib/supabase/server";
 import { createDb } from "@/db";
 import { calendarConnections } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { createCalendarConnection } from "@/lib/recall";
 import { NextResponse } from "next/server";
 import { createHmac } from "node:crypto";
@@ -34,6 +34,7 @@ function verifyState(stateB64: string): string | null {
 
 export async function GET(request: Request) {
   try {
+    const appOrigin = getPublicAppUrl();
     const url = new URL(request.url);
     const code = url.searchParams.get("code");
     const state = url.searchParams.get("state");
@@ -44,14 +45,14 @@ export async function GET(request: Request) {
       return NextResponse.redirect(
         new URL(
           `/dashboard/settings?error=${encodeURIComponent(error)}`,
-          request.url
+          appOrigin
         )
       );
     }
 
     if (!code || !state) {
       return NextResponse.redirect(
-        new URL("/dashboard/settings?error=missing_code", request.url)
+        new URL("/dashboard/settings?error=missing_code", appOrigin)
       );
     }
 
@@ -61,7 +62,7 @@ export async function GET(request: Request) {
     const userId = verifyState(state);
     if (!userId) {
       return NextResponse.redirect(
-        new URL("/dashboard/settings?error=invalid_state", request.url)
+        new URL("/dashboard/settings?error=invalid_state", appOrigin)
       );
     }
 
@@ -71,14 +72,13 @@ export async function GET(request: Request) {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user || user.id !== userId) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(new URL("/login", appOrigin));
     }
 
-    const appUrl = getPublicAppUrl();
-    const webhookUrl = `${appUrl}/api/recall/webhook`;
+    const webhookUrl = `${appOrigin}/api/recall/webhook`;
 
     // Reconstruct the redirect_uri we passed to Recall.ai (must match exactly)
-    const redirectUri = new URL(`${appUrl}/api/recall/calendar/callback`);
+    const redirectUri = new URL(`${appOrigin}/api/recall/calendar/callback`);
     redirectUri.searchParams.set("state", state);
     redirectUri.searchParams.set("provider", calendarProvider);
 
@@ -113,12 +113,23 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.redirect(
-      new URL("/dashboard/settings?calendar=connected", request.url)
+      new URL("/dashboard/settings?calendar=connected", appOrigin)
     );
   } catch (err) {
     console.error("Recall calendar callback error:", err);
-    return NextResponse.redirect(
-      new URL("/dashboard/settings?error=calendar_callback_failed", request.url)
-    );
+    try {
+      const origin = getPublicAppUrl();
+      return NextResponse.redirect(
+        new URL(
+          "/dashboard/settings?error=calendar_callback_failed",
+          origin
+        )
+      );
+    } catch {
+      return new NextResponse(
+        "Set NEXT_PUBLIC_APP_URL or NEXTAUTH_URL for redirects.",
+        { status: 500 }
+      );
+    }
   }
 }

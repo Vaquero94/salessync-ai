@@ -11,9 +11,12 @@ import { getCalendarAuthUrl } from "@/lib/recall";
 import { NextResponse } from "next/server";
 import { createHmac, randomBytes } from "node:crypto";
 
-function buildRedirectUri(state: string, provider: string): string {
-  const appUrl = getPublicAppUrl();
-  const uri = new URL(`${appUrl}/api/recall/calendar/callback`);
+function buildRedirectUri(
+  appOrigin: string,
+  state: string,
+  provider: string
+): string {
+  const uri = new URL(`${appOrigin}/api/recall/calendar/callback`);
   uri.searchParams.set("state", state);
   uri.searchParams.set("provider", provider);
   return uri.toString();
@@ -31,13 +34,14 @@ function createState(userId: string): string {
 
 export async function GET(request: Request) {
   try {
+    const appOrigin = getPublicAppUrl();
     const supabase = await createClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user?.id) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(new URL("/login", appOrigin));
     }
 
     const url = new URL(request.url);
@@ -48,19 +52,30 @@ export async function GET(request: Request) {
     const apiKey = process.env.RECALL_API_KEY;
     if (!apiKey) {
       return NextResponse.redirect(
-        new URL("/dashboard/settings?error=recall_not_configured", request.url)
+        new URL("/dashboard/settings?error=recall_not_configured", appOrigin)
       );
     }
 
     const state = createState(user.id);
-    const redirectUri = buildRedirectUri(state, provider);
+    const redirectUri = buildRedirectUri(appOrigin, state, provider);
     const authUrl = await getCalendarAuthUrl(provider, redirectUri);
 
     return NextResponse.redirect(authUrl);
   } catch (err) {
     console.error("Recall calendar connect error:", err);
-    return NextResponse.redirect(
-      new URL("/dashboard/settings?error=calendar_connect_failed", request.url)
-    );
+    try {
+      const origin = getPublicAppUrl();
+      return NextResponse.redirect(
+        new URL(
+          "/dashboard/settings?error=calendar_connect_failed",
+          origin
+        )
+      );
+    } catch {
+      return new NextResponse(
+        "Set NEXT_PUBLIC_APP_URL or NEXTAUTH_URL for redirects.",
+        { status: 500 }
+      );
+    }
   }
 }

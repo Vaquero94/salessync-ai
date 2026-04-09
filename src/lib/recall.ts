@@ -1,10 +1,19 @@
 /**
  * Recall.ai API client helpers for calendar integration.
- * Docs: https://docs.recall.ai/reference/v2
+ * Docs: https://docs.recall.ai/docs/regions — use the regional host for your workspace.
+ * api.recall.ai resolves to us-east-1; us-west-2 keys must use https://us-west-2.recall.ai/api
+ *
+ * Override with RECALL_API_BASE (no trailing slash), e.g. https://eu-central-1.recall.ai/api
  */
 import { createHmac } from "node:crypto";
 
-const RECALL_BASE = "https://api.recall.ai/api";
+const DEFAULT_RECALL_API_BASE = "https://us-west-2.recall.ai/api";
+
+function getRecallApiBase(): string {
+  const fromEnv = process.env.RECALL_API_BASE?.trim();
+  if (fromEnv) return fromEnv.replace(/\/$/, "");
+  return DEFAULT_RECALL_API_BASE;
+}
 
 function getApiKey(): string {
   const key = process.env.RECALL_API_KEY;
@@ -16,7 +25,7 @@ async function recallFetch(
   path: string,
   options: RequestInit = {}
 ): Promise<Response> {
-  const res = await fetch(`${RECALL_BASE}${path}`, {
+  const res = await fetch(`${getRecallApiBase()}${path}`, {
     ...options,
     headers: {
       Authorization: `Token ${getApiKey()}`,

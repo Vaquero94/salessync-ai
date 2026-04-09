@@ -4,6 +4,7 @@
  */
 export const dynamic = "force-dynamic";
 
+import { getPublicAppUrl } from "@/lib/app-url";
 import { createClient } from "@/lib/supabase/server";
 import { createDb } from "@/db";
 import { calendarConnections } from "@/db/schema";
@@ -73,8 +74,7 @@ export async function GET(request: Request) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    const appUrl =
-      process.env.NEXT_PUBLIC_APP_URL ?? new URL(request.url).origin;
+    const appUrl = getPublicAppUrl(request.url);
     const webhookUrl = `${appUrl}/api/recall/webhook`;
 
     // Reconstruct the redirect_uri we passed to Recall.ai (must match exactly)

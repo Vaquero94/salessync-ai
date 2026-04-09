@@ -5,6 +5,7 @@
  */
 export const dynamic = "force-dynamic";
 
+import { getPublicAppUrl } from "@/lib/app-url";
 import { createClient } from "@/lib/supabase/server";
 import { getCalendarAuthUrl } from "@/lib/recall";
 import { NextResponse } from "next/server";
@@ -15,9 +16,7 @@ function buildRedirectUri(
   state: string,
   provider: string
 ): string {
-  const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL ??
-    new URL(requestUrl).origin;
+  const appUrl = getPublicAppUrl(requestUrl);
   const uri = new URL(`${appUrl}/api/recall/calendar/callback`);
   uri.searchParams.set("state", state);
   uri.searchParams.set("provider", provider);

@@ -57,7 +57,6 @@ export async function createCalendarConnection(opts: {
   userId: string;
   webhookUrl: string;
 }): Promise<string> {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const res = await recallFetch("/v2/calendars/", {
     method: "POST",
     body: JSON.stringify({

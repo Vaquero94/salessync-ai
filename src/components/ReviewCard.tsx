@@ -45,6 +45,7 @@ type ReviewCardProps = {
 
 export function ReviewCard({
   extractionId,
+  recordingId,
   data,
   onApprove,
   onDismiss,
@@ -127,7 +128,12 @@ export function ReviewCard({
     <Card>
       <CardHeader>
         <CardTitle>Review extraction</CardTitle>
-        <CardDescription>Edit any field, then approve or dismiss</CardDescription>
+        <CardDescription>
+          Edit any field, then approve or dismiss
+          <span className="mt-1 block font-mono text-xs text-muted-foreground">
+            Recording {recordingId}
+          </span>
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Contacts */}

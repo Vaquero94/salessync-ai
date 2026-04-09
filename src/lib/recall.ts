@@ -39,7 +39,6 @@ async function recallFetch(
 /**
  * Returns the Recall.ai OAuth URL for connecting a user's calendar.
  * Provider: 'google' | 'microsoft'
- * @param redirectUri — Must match connect route; built from NEXT_PUBLIC_APP_URL only (see getOAuthPublicBaseUrl).
  */
 export async function getCalendarAuthUrl(
   provider: "google" | "microsoft",

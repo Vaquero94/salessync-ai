@@ -80,8 +80,6 @@ export default async function DashboardSettingsPage({
                     ? "Missing authorization code from HubSpot."
                     : params.error === "recall_not_configured"
                       ? "Recall.ai is not configured. Set RECALL_API_KEY."
-                      : params.error === "missing_next_public_app_url"
-                        ? "Set NEXT_PUBLIC_APP_URL in your environment to your app’s public URL (same origin users use in the browser) so calendar OAuth redirects work."
                       : params.error === "calendar_connect_failed"
                         ? "Failed to start calendar connection. Please try again."
                         : params.error === "calendar_callback_failed"

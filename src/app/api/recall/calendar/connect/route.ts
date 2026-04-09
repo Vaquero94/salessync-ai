@@ -62,7 +62,13 @@ export async function GET(request: Request) {
 
     return NextResponse.redirect(authUrl);
   } catch (err) {
-    console.error("Recall calendar connect error:", err);
+    const message = err instanceof Error ? err.message : String(err);
+    const stack = err instanceof Error ? err.stack : undefined;
+    console.error("Recall calendar connect error:", {
+      message,
+      stack,
+      err,
+    });
     try {
       const origin = getPublicAppUrl();
       return NextResponse.redirect(

@@ -44,11 +44,19 @@ export async function getCalendarAuthUrl(
   provider: "google" | "microsoft",
   redirectUri: string
 ): Promise<string> {
-  const res = await recallFetch(
-    `/v2/calendar-auth/${provider}/?redirect_uri=${encodeURIComponent(redirectUri)}`
-  );
+  const path = `/v2/calendar-auth/${provider}/?redirect_uri=${encodeURIComponent(redirectUri)}`;
+  const fullUrl = `${getRecallApiBase()}${path}`;
+
+  const res = await recallFetch(path);
   if (!res.ok) {
     const body = await res.text();
+    console.error("[Recall calendar-auth] Recall.ai request failed", {
+      endpoint: "GET calendar-auth (OAuth start)",
+      requestUrl: fullUrl,
+      httpStatus: res.status,
+      httpStatusText: res.statusText,
+      responseBody: body,
+    });
     throw new Error(`Recall.ai auth URL fetch failed (${res.status}): ${body}`);
   }
   const data = (await res.json()) as { auth_url: string };

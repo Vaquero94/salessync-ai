@@ -5,6 +5,7 @@ export const dynamic = "force-dynamic";
 
 import { createDb } from "@/db";
 import { googleCalendarConnections } from "@/db/schema";
+import { getPublicAppUrl } from "@/lib/app-url";
 import { encrypt } from "@/lib/crypto";
 import { exchangeGoogleAuthCode } from "@/lib/googleCalendar";
 import { eq } from "drizzle-orm";
@@ -30,6 +31,7 @@ function verifyState(stateB64: string): string | null {
 }
 
 export async function GET(request: Request) {
+  const origin = getPublicAppUrl();
   try {
     const url = new URL(request.url);
     const code = url.searchParams.get("code");
@@ -39,27 +41,27 @@ export async function GET(request: Request) {
     if (error) {
       console.error("Google OAuth error:", error);
       return NextResponse.redirect(
-        new URL(`/dashboard/settings?error=${encodeURIComponent(error)}`, request.url)
+        new URL(`/dashboard/settings?error=${encodeURIComponent(error)}`, origin)
       );
     }
 
     if (!code || !state) {
       return NextResponse.redirect(
-        new URL("/dashboard/settings?error=missing_code", request.url)
+        new URL("/dashboard/settings?error=missing_code", origin)
       );
     }
 
     const userId = verifyState(state);
     if (!userId) {
       return NextResponse.redirect(
-        new URL("/dashboard/settings?error=invalid_state", request.url)
+        new URL("/dashboard/settings?error=invalid_state", origin)
       );
     }
 
     const tokens = await exchangeGoogleAuthCode(code);
     if (!tokens.refresh_token) {
       return NextResponse.redirect(
-        new URL("/dashboard/settings?error=google_no_refresh_token", request.url)
+        new URL("/dashboard/settings?error=google_no_refresh_token", origin)
       );
     }
 
@@ -90,12 +92,12 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.redirect(
-      new URL("/dashboard/settings?google_calendar=connected", request.url)
+      new URL("/dashboard/settings?google_calendar=connected", origin)
     );
   } catch (err) {
     console.error("Google Calendar callback error:", err);
     return NextResponse.redirect(
-      new URL("/dashboard/settings?error=google_token_exchange_failed", request.url)
+      new URL("/dashboard/settings?error=google_token_exchange_failed", origin)
     );
   }
 }

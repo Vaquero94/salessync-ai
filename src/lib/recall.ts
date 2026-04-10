@@ -121,6 +121,38 @@ export async function deleteCalendarConnection(
  * Fetches the audio URL for a completed bot recording.
  * Returns null if not yet available.
  */
+/**
+ * Sends a Recall.ai bot to a meeting URL (Zoom, Meet, Teams, etc.).
+ * Metadata.userId is required for the recording webhook pipeline.
+ */
+export async function createBotForMeeting(opts: {
+  meetingUrl: string;
+  userId: string;
+  /** ISO 8601 — Recall recommends ~10+ minutes ahead for scheduled joins */
+  joinAtIso?: string | null;
+}): Promise<string> {
+  const body: Record<string, unknown> = {
+    meeting_url: opts.meetingUrl,
+    bot_name: "Sale Sync Notetaker",
+    recording_mode: "audio_only",
+    metadata: { userId: opts.userId },
+    transcription_options: { provider: "default" },
+  };
+  if (opts.joinAtIso) {
+    body.join_at = opts.joinAtIso;
+  }
+  const res = await recallFetch("/v1/bot/", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Recall.ai bot create failed (${res.status}): ${errText}`);
+  }
+  const data = (await res.json()) as { id: string };
+  return data.id;
+}
+
 export async function getBotAudioUrl(botId: string): Promise<string | null> {
   const res = await recallFetch(`/v1/bot/${botId}/`);
   if (!res.ok) return null;

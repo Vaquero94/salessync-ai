@@ -1,21 +1,29 @@
 import { createClient } from "@/lib/supabase/server";
 import { createDb } from "@/db";
-import { crmConnections, calendarConnections } from "@/db/schema";
+import {
+  calendarConnections,
+  crmConnections,
+  googleCalendarConnections,
+} from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, XCircle, Link2, CalendarCheck } from "lucide-react";
+import { CheckCircle, XCircle, Link2 } from "lucide-react";
+import { CalendarIntegrationsSection } from "./CalendarIntegrationsSection";
 import { ConnectHubSpotButton } from "./ConnectHubSpotButton";
 import { DisconnectHubSpotButton } from "./DisconnectHubSpotButton";
-import { ConnectCalendarButton } from "./ConnectCalendarButton";
-import { DisconnectCalendarButton } from "./DisconnectCalendarButton";
 
 export default async function DashboardSettingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; hubspot?: string; calendar?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    hubspot?: string;
+    calendar?: string;
+    google_calendar?: string;
+  }>;
 }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -23,7 +31,7 @@ export default async function DashboardSettingsPage({
   if (!user) redirect("/login");
 
   const db = createDb();
-  const [hubspotConnection, calendarConnection] = await Promise.all([
+  const [hubspotConnection, outlookConnection, googleConnection] = await Promise.all([
     db
       .select({ id: crmConnections.id, connectedAt: crmConnections.connectedAt })
       .from(crmConnections)
@@ -32,16 +40,29 @@ export default async function DashboardSettingsPage({
     db
       .select({
         id: calendarConnections.id,
-        calendarProvider: calendarConnections.calendarProvider,
         connectedAt: calendarConnections.connectedAt,
       })
       .from(calendarConnections)
-      .where(eq(calendarConnections.userId, user.id))
+      .where(
+        and(
+          eq(calendarConnections.userId, user.id),
+          eq(calendarConnections.calendarProvider, "microsoft")
+        )
+      )
+      .limit(1),
+    db
+      .select({
+        id: googleCalendarConnections.id,
+        connectedAt: googleCalendarConnections.connectedAt,
+      })
+      .from(googleCalendarConnections)
+      .where(eq(googleCalendarConnections.userId, user.id))
       .limit(1),
   ]);
 
   const connected = hubspotConnection.length > 0;
-  const calendarConnected = calendarConnection.length > 0;
+  const googleCalConnected = googleConnection.length > 0;
+  const outlookCalConnected = outlookConnection.length > 0;
   const params = await searchParams;
 
   return (
@@ -63,7 +84,16 @@ export default async function DashboardSettingsPage({
       {params.calendar === "connected" && (
         <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-3 text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
           <CheckCircle className="h-5 w-5 shrink-0" />
-          <span>Calendar connected. The bot will automatically join your Zoom meetings.</span>
+          <span>Outlook calendar connected. The bot will automatically join your Zoom meetings.</span>
+        </div>
+      )}
+      {params.google_calendar === "connected" && (
+        <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-3 text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
+          <CheckCircle className="h-5 w-5 shrink-0" />
+          <span>
+            Google Calendar connected. Invite bot@zeroentryai.co to meetings you want recorded; a
+            scheduled job will send the notetaker bot to those calls.
+          </span>
         </div>
       )}
       {params.error && (
@@ -84,7 +114,15 @@ export default async function DashboardSettingsPage({
                         ? "Failed to start calendar connection. Please try again."
                         : params.error === "calendar_callback_failed"
                           ? "Failed to complete calendar connection. Please try again."
-                          : `Connection failed: ${params.error}`}
+                          : params.error === "google_not_configured"
+                            ? "Google Calendar is not configured. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET."
+                            : params.error === "google_no_refresh_token"
+                              ? "Google did not return a refresh token. Remove app access in Google Account settings and connect again."
+                              : params.error === "google_token_exchange_failed"
+                                ? "Failed to complete Google sign-in. Check OAuth client and redirect URI."
+                                : params.error === "google_calendar_connect_failed"
+                                  ? "Could not start Google Calendar connection. Check NEXT_PUBLIC_APP_URL."
+                                  : `Connection failed: ${params.error}`}
           </span>
         </div>
       )}
@@ -131,54 +169,16 @@ export default async function DashboardSettingsPage({
         </Card>
       </section>
 
-      {/* Calendar Integration */}
-      <section>
-        <Card>
-          <CardHeader>
-            <CardTitle>Calendar Integration</CardTitle>
-            <CardDescription>
-              Connect your calendar so the bot automatically joins Zoom meetings — no manual trigger needed
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border p-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
-                  <CalendarCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div>
-                  <p className="font-medium">
-                    {calendarConnected
-                      ? `${calendarConnection[0].calendarProvider === "microsoft" ? "Outlook" : "Google"} Calendar`
-                      : "Google Calendar / Outlook"}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {calendarConnected
-                      ? `Connected ${calendarConnection[0].connectedAt ? `on ${new Date(calendarConnection[0].connectedAt).toLocaleDateString()}` : ""}. Bot joins Zoom meetings automatically.`
-                      : "Bot joins Zoom meetings from your calendar without manual setup"}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                {calendarConnected ? (
-                  <>
-                    <span className="inline-flex items-center gap-1 text-sm text-green-600 dark:text-green-400">
-                      <CheckCircle className="h-4 w-4" />
-                      Connected
-                    </span>
-                    <DisconnectCalendarButton />
-                  </>
-                ) : (
-                  <div className="flex gap-2">
-                    <ConnectCalendarButton provider="google" />
-                    <ConnectCalendarButton provider="microsoft" />
-                  </div>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
+      <CalendarIntegrationsSection
+        googleCalConnected={googleCalConnected}
+        googleConnectedAt={
+          googleCalConnected ? new Date(googleConnection[0].connectedAt) : null
+        }
+        outlookCalConnected={outlookCalConnected}
+        outlookConnectedAt={
+          outlookCalConnected ? new Date(outlookConnection[0].connectedAt) : null
+        }
+      />
 
       <section>
         <Card>

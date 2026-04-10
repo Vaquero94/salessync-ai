@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-export function DisconnectCalendarButton() {
+export function DisconnectOutlookCalendarButton() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   async function handleDisconnect() {
-    if (!confirm("Disconnect calendar? The bot will stop joining new meetings.")) return;
+    if (!confirm("Disconnect Outlook calendar? The bot will stop joining meetings from Recall.")) {
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/recall/calendar/disconnect", { method: "POST" });
@@ -17,7 +19,7 @@ export function DisconnectCalendarButton() {
       router.refresh();
     } catch (err) {
       console.error(err);
-      alert("Failed to disconnect calendar");
+      alert("Failed to disconnect Outlook calendar");
     } finally {
       setLoading(false);
     }

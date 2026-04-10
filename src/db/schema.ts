@@ -6,6 +6,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -130,6 +131,45 @@ export const waitlist = pgTable("waitlist", {
     .defaultNow()
     .notNull(),
 });
+
+/**
+ * Google Calendar via direct OAuth. Tokens are encrypted application-side (see @/lib/crypto).
+ */
+export const googleCalendarConnections = pgTable("google_calendar_connections", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" })
+    .unique(),
+  accessToken: text("access_token").notNull(),
+  refreshToken: text("refresh_token").notNull(),
+  connectedAt: timestamp("connected_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+/**
+ * One row per Google event we already sent a Recall bot for (avoids duplicate bots each cron tick).
+ */
+export const googleCalendarBotDispatches = pgTable(
+  "google_calendar_bot_dispatches",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    googleEventId: text("google_event_id").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (t) => [
+    uniqueIndex("google_calendar_bot_dispatches_user_event_idx").on(
+      t.userId,
+      t.googleEventId
+    ),
+  ]
+);
 
 /**
  * Recall.ai calendar connections for automatic bot joining.

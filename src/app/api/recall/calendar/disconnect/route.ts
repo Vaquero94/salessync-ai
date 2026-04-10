@@ -7,11 +7,11 @@ export const dynamic = "force-dynamic";
 import { createClient } from "@/lib/supabase/server";
 import { createDb } from "@/db";
 import { calendarConnections } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { deleteCalendarConnection } from "@/lib/recall";
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
     const supabase = await createClient();
     const {
@@ -26,7 +26,12 @@ export async function POST(request: Request) {
     const [connection] = await db
       .select()
       .from(calendarConnections)
-      .where(eq(calendarConnections.userId, user.id))
+      .where(
+        and(
+          eq(calendarConnections.userId, user.id),
+          eq(calendarConnections.calendarProvider, "microsoft")
+        )
+      )
       .limit(1);
 
     if (!connection) {

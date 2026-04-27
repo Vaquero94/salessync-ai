@@ -41,14 +41,17 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
       {/* Fixed navigation for quick top-level actions */}
       <nav className="fixed inset-x-0 top-0 z-50" style={{ background: "#7C6FFF" }}>
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 text-[rgba(255,255,255,0.85)]">
-          <span style={{ filter: "brightness(0) invert(1)" }} className="inline-flex shrink-0">
-            <BrandLogo variant="compact" priority />
-          </span>
+          <BrandLogo variant="compact" appearance="onViolet" priority />
           <Button asChild size="lg" className="border-0 bg-transparent p-0 shadow-none hover:bg-transparent">
             <Link
               href="#waitlist"
-              className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-md px-8 text-sm font-medium transition-opacity hover:opacity-90"
-              style={{ background: "#fff", color: "#5B4FE8", border: "none" }}
+              className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-md px-8 text-sm transition-opacity hover:opacity-90"
+              style={{
+                background: "#fff",
+                color: "#5B4FE8",
+                fontWeight: "600",
+                border: "none",
+              }}
             >
               Get early access
             </Link>

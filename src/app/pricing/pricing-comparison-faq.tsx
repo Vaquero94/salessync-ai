@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
 import { DM_Sans } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { cabinetBold, cabinetHeading } from "@/lib/typography";
@@ -14,49 +13,26 @@ export function PricingComparisonFaqCtaFooter() {
     <>
       <section className="mx-auto mt-24 max-w-6xl overflow-x-auto px-4 sm:px-6">
         <h2 className={`${cabinetHeading} mb-8 text-center text-3xl`}>Feature comparison</h2>
-        <table className="w-full min-w-[800px] border-collapse text-left text-sm">
+        <table className="w-full min-w-[640px] border-collapse text-left text-sm">
           <thead>
             <tr className="border-b border-white/10">
               <th className="py-3 pr-4 font-medium text-zinc-400">Feature</th>
               <th className="py-3 px-4 font-semibold text-white">Starter</th>
               <th className="py-3 px-4 font-semibold text-[#c4b5fd]">Pro</th>
               <th className="py-3 px-4 font-semibold text-white">Team</th>
-              <th className="py-3 px-4 font-semibold text-white">
-                <span className="inline-flex flex-wrap items-center gap-2">
-                  Coming soon
-                  <span className="bg-[#7C6FFF]/15 px-2 py-0.5 text-xs font-medium text-[#b9b0ff] rounded-full">
-                    Phase 2
-                  </span>
-                </span>
-              </th>
             </tr>
           </thead>
           <tbody className="text-zinc-300">
-            <CmpRow feature="HubSpot CRM sync" s="✓" p="✓" t="✓" cs="✓" />
-            <CmpRow
-              feature="CRM integrations"
-              s="HubSpot"
-              p="HubSpot"
-              t="HubSpot"
-              cs={
-                <span className="text-xs text-[#b9b0ff]">
-                  Pipedrive · Close · Zoho · Salesforce
-                </span>
-              }
-            />
-            <CmpRow feature="Recording minutes / seat" s="400/mo" p="800/mo" t="Pooled" cs="✓" />
-            <CmpRow feature="Email capture" s="✓" p="Unlimited" t="Unlimited" cs="✓" />
-            <CmpRow feature="Zoom + Meet" s="✓" p="✓" t="✓" cs="✓" />
-            <CmpRow feature="Phone recording" s="—" p="—" t="Coming soon" cs="✓" />
-            <CmpRow feature="Priority support" s="—" p="✓" t="✓" cs="✓" />
-            <CmpRow feature="Org policies & roles" s="—" p="—" t="✓" cs="✓" />
-            <CmpRow feature="Policies & roles" s="—" p="—" t="—" cs="✓" />
-            <CmpRow feature="Minimum seats" s="1" p="1" t="5" cs="✓" />
+            <CmpRow feature="HubSpot CRM sync" s="✓" p="✓" t="✓" />
+            <CmpRow feature="Recording minutes / seat" s="400/mo" p="800/mo" t="Pooled" />
+            <CmpRow feature="Email capture" s="✓" p="Unlimited" t="Unlimited" />
+            <CmpRow feature="Zoom + Meet" s="✓" p="✓" t="✓" />
+            <CmpRow feature="Phone recording" s="—" p="—" t="Coming soon" />
+            <CmpRow feature="Priority support" s="—" p="✓" t="✓" />
+            <CmpRow feature="Org policies & roles" s="—" p="—" t="✓" />
+            <CmpRow feature="Minimum seats" s="1" p="1" t="5" />
           </tbody>
         </table>
-        <p className="mt-3 text-xs italic text-zinc-500">
-          * Phase 2 features are in active development. Join the waitlist to be notified when your CRM integration ships.
-        </p>
       </section>
 
       <section className="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
@@ -102,26 +78,13 @@ export function PricingComparisonFaqCtaFooter() {
   );
 }
 
-function CmpRow({
-  feature,
-  s,
-  p,
-  t,
-  cs,
-}: {
-  feature: string;
-  s: ReactNode;
-  p: ReactNode;
-  t: ReactNode;
-  cs: ReactNode;
-}) {
+function CmpRow({ feature, s, p, t }: { feature: string; s: string; p: string; t: string }) {
   return (
     <tr className="border-b border-white/5">
       <td className="py-3 pr-4 text-zinc-400">{feature}</td>
       <td className="py-3 px-4">{s}</td>
       <td className="py-3 px-4">{p}</td>
       <td className="py-3 px-4">{t}</td>
-      <td className="py-3 px-4">{cs}</td>
     </tr>
   );
 }

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WaitlistForm } from "@/app/WaitlistForm";
 import { cabinetBold, cabinetHeading } from "@/lib/typography";
 import { features, stats } from "./home-landing-data";
+import { LandingCrmIntegrationsSection } from "./home-landing-crm";
 import {
   LandingHowItWorksSection,
   LandingWhatWeFixSection,
@@ -98,6 +99,8 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
             ))}
           </div>
         </section>
+
+        <LandingCrmIntegrationsSection />
 
         <section
           id="waitlist"

@@ -1,6 +1,6 @@
 import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
 import Link from "next/link";
-import { BrandLogo } from "@/components/brand-logo";
+import { Nav } from "@/components/layout/Nav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WaitlistForm } from "@/app/WaitlistForm";
@@ -23,28 +23,7 @@ type HomeLandingProps = { waitlistCount: number };
 export function HomeLanding({ waitlistCount }: HomeLandingProps) {
   return (
     <main className={`${dmSans.className} min-h-screen bg-[#0D0D10] text-white`}>
-      {/* Fixed navigation for quick top-level actions */}
-      <nav className="fixed inset-x-0 top-0 z-50" style={{ background: "#7C6FFF" }}>
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 text-[rgba(255,255,255,0.85)]">
-          <span style={{ filter: "brightness(0) invert(1)" }} className="inline-flex shrink-0">
-            <BrandLogo variant="compact" priority />
-          </span>
-          <Button asChild size="lg" className="border-0 bg-transparent p-0 shadow-none hover:bg-transparent">
-            <Link
-              href="#waitlist"
-              className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-md px-8 text-sm transition-opacity hover:opacity-90"
-              style={{
-                background: "#fff",
-                color: "#5B4FE8",
-                fontWeight: "600",
-                border: "none",
-              }}
-            >
-              Get early access
-            </Link>
-          </Button>
-        </div>
-      </nav>
+      <Nav activePage="home" />
 
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 pb-20 pt-28 sm:px-6 lg:gap-16">
         <section className="grid items-center gap-8 lg:grid-cols-2">

@@ -98,42 +98,6 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
           </div>
         </section>
 
-        <section className="space-y-4">
-          <h2 className={sectionHeadingClass}>Simple pricing</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card className="border-white/10 bg-white/5 text-white">
-              <CardHeader>
-                <CardTitle className={`${dmSans.className} text-2xl font-bold`}>Starter - $19</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm text-zinc-200">
-                <p>Ideal for individual reps and founders.</p>
-                <p>Includes extraction review, approve/dismiss control, and CRM sync.</p>
-                <ul className="list-inside list-disc space-y-1 text-zinc-300">
-                  <li>400 recording mins/mo</li>
-                  <li>HubSpot CRM</li>
-                  <li>Zoom + Meet</li>
-                  <li>web dashboard</li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card className="border-[#7C6FFF]/40 bg-[#7C6FFF]/10 text-white">
-              <CardHeader>
-                <CardTitle className={`${dmSans.className} text-2xl font-bold`}>Pro - $29</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm text-zinc-100">
-                <p>Built for teams that need consistency and speed at scale.</p>
-                <p>Everything in Starter plus advanced controls and priority onboarding.</p>
-                <ul className="list-inside list-disc space-y-1 text-zinc-200">
-                  <li>Everything in Starter</li>
-                  <li>800 recording mins/mo</li>
-                  <li>unlimited email processing</li>
-                  <li>priority support</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
         <section id="waitlist" className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
           <h2 className={sectionHeadingClass}>Get early access</h2>
           <p className="mt-2 max-w-2xl text-zinc-300">

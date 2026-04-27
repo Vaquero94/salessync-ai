@@ -31,9 +31,6 @@ export function Nav({ activePage }: NavProps) {
           <Link href="/pricing" className={navLinkClass(isPricing)}>
             Pricing
           </Link>
-          <Link href="/#how-it-works" className={`${linkBase} ${inactiveColor}`}>
-            How it works
-          </Link>
         </div>
 
         <Button asChild size="lg" className="shrink-0 border-0 bg-transparent p-0 shadow-none hover:bg-transparent">

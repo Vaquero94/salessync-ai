@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 export function WaitlistForm() {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -18,7 +17,7 @@ export function WaitlistForm() {
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email }),
+        body: JSON.stringify({ email }),
       });
 
       if (!res.ok) {
@@ -48,14 +47,6 @@ export function WaitlistForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex w-full max-w-md flex-col gap-3">
-      <input
-        type="text"
-        placeholder="Your name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        required
-        className="rounded-md border bg-background px-4 py-2 text-sm outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
-      />
       <input
         type="email"
         placeholder="Your email"

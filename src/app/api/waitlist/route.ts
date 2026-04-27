@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 const schema = z.object({
-  name: z.string().min(1).max(100),
+  name: z.string().min(1).max(100).optional(),
   email: z.string().email().max(255),
 });
 
@@ -14,17 +14,20 @@ export async function POST(request: Request) {
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "Invalid name or email" },
+        { error: "Invalid email" },
         { status: 400 }
       );
     }
 
     const { name, email } = parsed.data;
+    // Keep DB constraints satisfied when name is omitted from the email-only form.
+    const fallbackName = email.split("@")[0]?.trim() || "Waitlist User";
+    const safeName = name?.trim() || fallbackName;
     const supabase = createAdminClient();
 
     const { error } = await supabase
       .from("waitlist")
-      .insert({ name, email });
+      .insert({ name: safeName, email });
 
     if (error) {
       // Duplicate email — treat as success so we don't leak existence

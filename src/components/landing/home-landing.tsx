@@ -1,11 +1,10 @@
-import { Bricolage_Grotesque, DM_Sans, Syne } from "next/font/google";
+import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WaitlistForm } from "@/app/WaitlistForm";
 
-const syne = Syne({ subsets: ["latin"], weight: "800" });
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"] });
 const bricolageGrotesque = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -109,7 +108,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
         </section>
 
         <section id="how-it-works" className="space-y-4">
-          <h2 className={`${syne.className} text-3xl sm:text-4xl`}>How it works</h2>
+          <h2 className={`${dmSans.className} text-3xl font-bold sm:text-4xl`}>How it works</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {steps.map((step, index) => (
               <Card key={step} className="border-white/10 bg-white/5 text-white">
@@ -123,7 +122,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
         </section>
 
         <section className="space-y-4">
-          <h2 className={`${syne.className} text-3xl sm:text-4xl`}>What we fix</h2>
+          <h2 className={`${dmSans.className} text-3xl font-bold sm:text-4xl`}>What we fix</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {pains.map((item) => (
               <Card key={item.pain} className="border-white/10 bg-white/5 text-white">
@@ -137,7 +136,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
         </section>
 
         <section className="space-y-4">
-          <h2 className={`${syne.className} text-3xl sm:text-4xl`}>Core features</h2>
+          <h2 className={`${dmSans.className} text-3xl font-bold sm:text-4xl`}>Core features</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature) => (
               <div key={feature} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm text-zinc-200">
@@ -148,31 +147,43 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
         </section>
 
         <section className="space-y-4">
-          <h2 className={`${syne.className} text-3xl sm:text-4xl`}>Simple pricing</h2>
+          <h2 className={`${dmSans.className} text-3xl font-bold sm:text-4xl`}>Simple pricing</h2>
           <div className="grid gap-4 md:grid-cols-2">
             <Card className="border-white/10 bg-white/5 text-white">
               <CardHeader>
-                <CardTitle className={`${syne.className} text-2xl`}>Starter - $19</CardTitle>
+                <CardTitle className={`${dmSans.className} text-2xl font-bold`}>Starter - $19</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm text-zinc-200">
                 <p>Ideal for individual reps and founders.</p>
                 <p>Includes extraction review, approve/dismiss control, and CRM sync.</p>
+                <ul className="list-inside list-disc space-y-1 text-zinc-300">
+                  <li>400 recording mins/mo</li>
+                  <li>HubSpot CRM</li>
+                  <li>Zoom + Meet</li>
+                  <li>web dashboard</li>
+                </ul>
               </CardContent>
             </Card>
             <Card className="border-[#7C6FFF]/40 bg-[#7C6FFF]/10 text-white">
               <CardHeader>
-                <CardTitle className={`${syne.className} text-2xl`}>Pro - $29</CardTitle>
+                <CardTitle className={`${dmSans.className} text-2xl font-bold`}>Pro - $29</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm text-zinc-100">
                 <p>Built for teams that need consistency and speed at scale.</p>
                 <p>Everything in Starter plus advanced controls and priority onboarding.</p>
+                <ul className="list-inside list-disc space-y-1 text-zinc-200">
+                  <li>Everything in Starter</li>
+                  <li>800 recording mins/mo</li>
+                  <li>unlimited email processing</li>
+                  <li>priority support</li>
+                </ul>
               </CardContent>
             </Card>
           </div>
         </section>
 
         <section id="waitlist" className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-          <h2 className={`${syne.className} text-3xl sm:text-4xl`}>Get early access</h2>
+          <h2 className={`${dmSans.className} text-3xl font-bold sm:text-4xl`}>Get early access</h2>
           <p className="mt-2 max-w-2xl text-zinc-300">
             Join the waitlist and we will invite you as we roll out onboarding.
             {waitlistCount > 0 ? ` ${waitlistCount.toLocaleString()} people are already in line.` : ""}

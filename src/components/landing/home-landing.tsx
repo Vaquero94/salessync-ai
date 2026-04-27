@@ -4,6 +4,11 @@ import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WaitlistForm } from "@/app/WaitlistForm";
+import { features, stats } from "./home-landing-data";
+import {
+  LandingHowItWorksSection,
+  LandingWhatWeFixSection,
+} from "./home-landing-how-fix";
 
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"] });
 const bricolageGrotesque = Bricolage_Grotesque({
@@ -11,27 +16,7 @@ const bricolageGrotesque = Bricolage_Grotesque({
   weight: ["400", "700", "800"],
 });
 
-const stats = ["5hrs saved weekly", "30s review time", "8x cheaper than Gong", "100% rep-controlled"];
-const steps = [
-  "Connect your CRM and calendar in under 2 minutes.",
-  "Zero Entry AI listens to calls, emails, and meetings.",
-  "AI extracts contacts, deal changes, tasks, and risks.",
-  "Rep approves in one click before anything syncs.",
-];
-const pains = [
-  { pain: "Manual CRM updates after every call", fix: "Auto-captured data appears instantly for approval." },
-  { pain: "Inconsistent deal notes and missing context", fix: "Standardized summaries and structured fields every time." },
-  { pain: "Reps lose selling time to admin work", fix: "Admin shrinks from hours to minutes each week." },
-  { pain: "Leaders cannot trust pipeline hygiene", fix: "Rep-controlled reviews keep every update accurate." },
-];
-const features = [
-  "CRM-ready contact and deal extraction",
-  "Action item detection with owner + due date",
-  "Call summary and sentiment tagging",
-  "One-click approve, edit, or dismiss",
-  "Duplicate-safe waitlist and onboarding flow",
-  "Built for teams that value data quality",
-];
+const sectionHeadingClass = `${dmSans.className} text-3xl font-bold sm:text-4xl`;
 
 type HomeLandingProps = { waitlistCount: number };
 
@@ -120,36 +105,11 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
           ))}
         </section>
 
-        <section id="how-it-works" className="space-y-4">
-          <h2 className={`${dmSans.className} text-3xl font-bold sm:text-4xl`}>How it works</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            {steps.map((step, index) => (
-              <Card key={step} className="border-white/10 bg-white/5 text-white">
-                <CardContent className="pt-6">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#b9b0ff]">Step {index + 1}</p>
-                  <p className="text-zinc-200">{step}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
+        <LandingHowItWorksSection headingClassName={sectionHeadingClass} />
+        <LandingWhatWeFixSection headingClassName={sectionHeadingClass} />
 
         <section className="space-y-4">
-          <h2 className={`${dmSans.className} text-3xl font-bold sm:text-4xl`}>What we fix</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            {pains.map((item) => (
-              <Card key={item.pain} className="border-white/10 bg-white/5 text-white">
-                <CardContent className="space-y-2 pt-6">
-                  <p className="text-base font-semibold text-zinc-100">{item.pain}</p>
-                  <p className="text-sm text-zinc-300">{item.fix}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        <section className="space-y-4">
-          <h2 className={`${dmSans.className} text-3xl font-bold sm:text-4xl`}>Core features</h2>
+          <h2 className={sectionHeadingClass}>Core features</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature) => (
               <div key={feature} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm text-zinc-200">
@@ -160,7 +120,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
         </section>
 
         <section className="space-y-4">
-          <h2 className={`${dmSans.className} text-3xl font-bold sm:text-4xl`}>Simple pricing</h2>
+          <h2 className={sectionHeadingClass}>Simple pricing</h2>
           <div className="grid gap-4 md:grid-cols-2">
             <Card className="border-white/10 bg-white/5 text-white">
               <CardHeader>
@@ -196,7 +156,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
         </section>
 
         <section id="waitlist" className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-          <h2 className={`${dmSans.className} text-3xl font-bold sm:text-4xl`}>Get early access</h2>
+          <h2 className={sectionHeadingClass}>Get early access</h2>
           <p className="mt-2 max-w-2xl text-zinc-300">
             Join the waitlist and we will invite you as we roll out onboarding.
             {waitlistCount > 0 ? ` ${waitlistCount.toLocaleString()} people are already in line.` : ""}

@@ -82,7 +82,7 @@ export async function createCalendarConnection(opts: {
       redirect_uri: opts.redirectUri,
       webhook_url: opts.webhookUrl,
       bot_config: {
-        bot_name: "Sale Sync Notetaker",
+        bot_name: "Zero Entry AI Notetaker",
         recording_mode: "audio_only",
         metadata: { userId: opts.userId },
         transcription_options: { provider: "default" },
@@ -133,7 +133,7 @@ export async function createBotForMeeting(opts: {
 }): Promise<string> {
   const body: Record<string, unknown> = {
     meeting_url: opts.meetingUrl,
-    bot_name: "Sale Sync Notetaker",
+    bot_name: "Zero Entry AI Notetaker",
     recording_mode: "audio_only",
     metadata: { userId: opts.userId },
     transcription_options: { provider: "default" },

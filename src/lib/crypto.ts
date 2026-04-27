@@ -26,6 +26,7 @@ function getKey(): Buffer {
   } catch {
     /* pass */
   }
+  // Legacy salt string — must stay fixed or existing encrypted tokens cannot be decrypted.
   return scryptSync(secret, "salesync-crm-salt", KEY_LENGTH);
 }
 

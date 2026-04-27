@@ -9,7 +9,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Zero Entry AI",
-  description: "AI auto-logs your calls, emails, and meetings directly into your CRM.",
+  description:
+    "AI auto-logs your calls, emails, and meetings directly into your CRM.",
   icons: {
     icon: "/images/icon-gradient.svg",
   },

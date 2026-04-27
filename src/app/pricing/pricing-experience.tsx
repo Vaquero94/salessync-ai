@@ -1,16 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { DM_Sans, Syne } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import { useState, type ReactNode } from "react";
 import { Nav } from "@/components/layout/Nav";
 import { Button } from "@/components/ui/button";
+import { cabinetHeading } from "@/lib/typography";
 import { MONTHLY_PRICE, ANNUAL_MONTHLY_EQ } from "./pricing-data";
 import { PricingCalculator } from "./pricing-calculator";
 import { PricingComparisonFaqCtaFooter } from "./pricing-comparison-faq";
 
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
-const syne = Syne({ subsets: ["latin"], weight: "800" });
 
 function monthlyEquivalent(plan: keyof typeof MONTHLY_PRICE, annual: boolean) {
   return annual ? ANNUAL_MONTHLY_EQ[plan] : MONTHLY_PRICE[plan];
@@ -32,7 +32,7 @@ export function PricingExperience() {
           <p className="mx-auto mb-4 inline-flex rounded-full border border-[#7C6FFF]/50 bg-[#7C6FFF]/15 px-3 py-1 text-xs font-medium uppercase tracking-wide text-[#b9b0ff]">
             Transparent pricing
           </p>
-          <h1 className={`${syne.className} mb-4 text-balance text-4xl tracking-tight sm:text-5xl`}>
+          <h1 className={`${cabinetHeading} mb-4 text-balance text-4xl tracking-tight sm:text-5xl`}>
             Pay for outcomes, not busywork
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-zinc-400">
@@ -72,10 +72,10 @@ export function PricingExperience() {
 
         <section className="mx-auto mt-12 grid max-w-6xl gap-6 px-4 md:grid-cols-3 sm:px-6">
           <div className="relative flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-            <h2 className={`${syne.className} text-xl font-bold`}>Starter</h2>
+            <h2 className={`${cabinetHeading} text-xl`}>Starter</h2>
             <p className="mt-1 text-sm text-zinc-400">Individual reps & founders</p>
             <p className="mt-6">
-              <span className="text-4xl font-bold">${starterPrice}</span>
+              <span className={`${cabinetHeading} text-4xl`}>${starterPrice}</span>
               <span className="text-zinc-500">/seat/mo</span>
             </p>
             <ul className="mt-6 flex flex-1 flex-col gap-2 text-sm text-zinc-300">
@@ -96,10 +96,10 @@ export function PricingExperience() {
             <span className="absolute right-4 top-0 z-10 -translate-y-1/2 rounded-full bg-[#7C6FFF] px-3 py-1 text-xs font-semibold text-white shadow-lg">
               Most popular
             </span>
-            <h2 className={`${syne.className} text-xl font-bold`}>Pro</h2>
+            <h2 className={`${cabinetHeading} text-xl`}>Pro</h2>
             <p className="mt-1 text-sm text-zinc-300">Power sellers & small teams</p>
             <p className="mt-6">
-              <span className="text-4xl font-bold">${proPrice}</span>
+              <span className={`${cabinetHeading} text-4xl`}>${proPrice}</span>
               <span className="text-zinc-400">/seat/mo</span>
             </p>
             <ul className="mt-6 flex flex-1 flex-col gap-2 text-sm text-zinc-200">
@@ -117,10 +117,10 @@ export function PricingExperience() {
             <span className="mb-1 inline-block w-fit rounded-md bg-white/10 px-2 py-0.5 text-xs font-semibold text-[#b9b0ff]">
               5 seat minimum
             </span>
-            <h2 className={`${syne.className} text-xl font-bold`}>Team</h2>
+            <h2 className={`${cabinetHeading} text-xl`}>Team</h2>
             <p className="mt-1 text-sm text-zinc-400">Org-wide rollout</p>
             <p className="mt-6">
-              <span className="text-4xl font-bold">${teamPrice}</span>
+              <span className={`${cabinetHeading} text-4xl`}>${teamPrice}</span>
               <span className="text-zinc-500">/seat/mo</span>
             </p>
             <p className="mt-2 text-xs leading-relaxed text-zinc-500">

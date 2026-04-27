@@ -1,19 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { Syne } from "next/font/google";
 import { DM_Sans } from "next/font/google";
 import { Button } from "@/components/ui/button";
+import { cabinetBold, cabinetHeading } from "@/lib/typography";
 import { faqItems } from "./pricing-data";
 
-const syne = Syne({ subsets: ["latin"], weight: "800" });
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
 export function PricingComparisonFaqCtaFooter() {
   return (
     <>
       <section className="mx-auto mt-24 max-w-6xl overflow-x-auto px-4 sm:px-6">
-        <h2 className={`${syne.className} mb-8 text-center text-3xl font-bold`}>Feature comparison</h2>
+        <h2 className={`${cabinetHeading} mb-8 text-center text-3xl`}>Feature comparison</h2>
         <table className="w-full min-w-[640px] border-collapse text-left text-sm">
           <thead>
             <tr className="border-b border-white/10">
@@ -37,7 +36,7 @@ export function PricingComparisonFaqCtaFooter() {
       </section>
 
       <section className="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
-        <h2 className={`${syne.className} mb-10 text-center text-3xl font-bold`}>FAQ</h2>
+        <h2 className={`${cabinetHeading} mb-10 text-center text-3xl`}>FAQ</h2>
         <div className="grid gap-6 md:grid-cols-2">
           {faqItems.map((item) => (
             <div key={item.q} className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
@@ -50,7 +49,7 @@ export function PricingComparisonFaqCtaFooter() {
 
       <section className="mx-auto mt-24 max-w-6xl px-4 sm:px-6">
         <div className="rounded-2xl border border-[#7C6FFF]/40 bg-gradient-to-br from-[#7C6FFF]/20 to-transparent px-8 py-12 text-center">
-          <h2 className={`${syne.className} text-2xl font-bold sm:text-3xl`}>Ready to zero out CRM busywork?</h2>
+          <h2 className={`${cabinetHeading} text-2xl sm:text-3xl`}>Ready to zero out CRM busywork?</h2>
           <p className="mx-auto mt-2 max-w-xl text-zinc-400">Join the waitlist for early access and onboarding.</p>
           <Button asChild size="lg" className="mt-6 bg-white font-semibold text-[#5B4FE8] hover:bg-white/90">
             <Link href="/#waitlist">Get early access</Link>
@@ -60,7 +59,7 @@ export function PricingComparisonFaqCtaFooter() {
 
       <footer className={`${dmSans.className} mx-auto mt-20 max-w-6xl border-t border-white/10 px-4 pt-10 sm:px-6`}>
         <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-          <p className={`${syne.className} text-lg font-bold text-white`}>Zero Entry AI</p>
+          <p className={`${cabinetBold} text-lg text-white`}>Zero Entry AI</p>
           <div className="flex flex-wrap justify-center gap-6 text-sm text-zinc-400">
             <Link href="/" className="hover:text-white">
               Home
@@ -68,15 +67,12 @@ export function PricingComparisonFaqCtaFooter() {
             <Link href="/pricing" className="hover:text-white">
               Pricing
             </Link>
-            <Link href="/#how-it-works" className="hover:text-white">
-              How it works
-            </Link>
             <Link href="/#waitlist" className="hover:text-white">
               Waitlist
             </Link>
           </div>
         </div>
-        <p className="mt-8 text-center text-xs text-zinc-600">© {new Date().getFullYear()} Zero Entry AI. All rights reserved.</p>
+        <p className="mt-8 text-center text-xs text-zinc-500">© 2026 Zero Entry AI. All rights reserved.</p>
       </footer>
     </>
   );

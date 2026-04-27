@@ -4,6 +4,7 @@ import { Nav } from "@/components/layout/Nav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WaitlistForm } from "@/app/WaitlistForm";
+import { cabinetBold, cabinetHeading } from "@/lib/typography";
 import { features, stats } from "./home-landing-data";
 import {
   LandingHowItWorksSection,
@@ -98,17 +99,46 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
           </div>
         </section>
 
-        <section id="waitlist" className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-          <h2 className={sectionHeadingClass}>Get early access</h2>
-          <p className="mt-2 max-w-2xl text-zinc-300">
-            Join the waitlist and we will invite you as we roll out onboarding.
-            {waitlistCount > 0 ? ` ${waitlistCount.toLocaleString()} people are already in line.` : ""}
+        <section
+          id="waitlist"
+          className="rounded-2xl border border-[#7C6FFF]/30 bg-[#12101e] px-8 py-16 text-center"
+        >
+          <h2 className={`${cabinetHeading} text-balance text-4xl md:text-5xl`}>Stop logging. Start selling.</h2>
+          <p className="mt-3 mb-8 text-base text-zinc-400">
+            Join the waitlist and be first to get your CRM updated automatically — in under 30 seconds per call.
           </p>
-          <div className="mt-6 max-w-md">
+          <Link
+            href="/#waitlist"
+            className="inline-flex rounded-lg bg-[#7C6FFF] px-8 py-3 text-base font-semibold text-white transition hover:opacity-90"
+          >
+            Get early access
+          </Link>
+          <div className="mx-auto mt-8 max-w-md">
             <WaitlistForm />
           </div>
+          {waitlistCount > 0 ? (
+            <p className="mt-4 text-sm text-zinc-500">{waitlistCount.toLocaleString()} people are already in line.</p>
+          ) : null}
         </section>
       </div>
+
+      <footer className={`${dmSans.className} mx-auto mt-12 max-w-6xl border-t border-white/10 px-4 pb-12 pt-10 sm:px-6`}>
+        <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+          <p className={`${cabinetBold} text-lg text-white`}>Zero Entry AI</p>
+          <nav className="flex flex-wrap justify-center gap-6 text-sm text-zinc-400" aria-label="Footer">
+            <Link href="/" className="hover:text-white">
+              Home
+            </Link>
+            <Link href="/pricing" className="hover:text-white">
+              Pricing
+            </Link>
+            <Link href="/#waitlist" className="hover:text-white">
+              Waitlist
+            </Link>
+          </nav>
+        </div>
+        <p className="mt-8 text-center text-xs text-zinc-500">© 2026 Zero Entry AI. All rights reserved.</p>
+      </footer>
     </main>
   );
 }

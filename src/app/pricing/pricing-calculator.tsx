@@ -1,10 +1,8 @@
 "use client";
 
-import { Syne } from "next/font/google";
 import { useMemo, useState } from "react";
+import { cabinetHeading } from "@/lib/typography";
 import { ANNUAL_MONTHLY_EQ, MONTHLY_PRICE } from "./pricing-data";
-
-const syne = Syne({ subsets: ["latin"], weight: "800" });
 
 function monthlyEq(plan: keyof typeof MONTHLY_PRICE, annual: boolean) {
   return annual ? ANNUAL_MONTHLY_EQ[plan] : MONTHLY_PRICE[plan];
@@ -64,7 +62,7 @@ export function PricingCalculator({ annualBilling }: { annualBilling: boolean })
 
   return (
     <section className="mx-auto mt-20 max-w-6xl px-4 sm:px-6">
-      <h2 className={`${syne.className} mb-2 text-center text-3xl font-bold`}>ROI calculator</h2>
+      <h2 className={`${cabinetHeading} mb-2 text-center text-3xl`}>ROI calculator</h2>
       <p className="mx-auto mb-10 max-w-2xl text-center text-zinc-400">
         Estimate admin labor going into CRM hygiene versus your Zero Entry AI subscription.
       </p>

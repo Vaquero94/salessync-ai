@@ -12,7 +12,7 @@ const bricolageGrotesque = Bricolage_Grotesque({
   weight: ["400", "700", "800"],
 });
 
-const stats = ["5hrs saved weekly", "30s review time", "8x cheaper than VAs", "100% rep-controlled"];
+const stats = ["5hrs saved weekly", "30s review time", "8x cheaper than Gong", "100% rep-controlled"];
 const steps = [
   "Connect your CRM and calendar in under 2 minutes.",
   "Zero Entry AI listens to calls, emails, and meetings.",
@@ -53,7 +53,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
         <section className="grid items-center gap-8 lg:grid-cols-2">
           <div className="space-y-5">
             <p className="inline-flex rounded-full border border-[#7C6FFF]/50 bg-[#7C6FFF]/15 px-3 py-1 text-xs font-medium uppercase tracking-wide text-[#b9b0ff]">
-              Zero Entry AI for modern revenue teams
+              Now live — HubSpot integration
             </p>
             <h1
               className={`${bricolageGrotesque.className} text-balance text-4xl leading-tight sm:text-5xl lg:text-6xl`}
@@ -75,7 +75,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
           </div>
           <Card id="demo" className="border-white/10 bg-white/5 text-white">
             <CardHeader>
-              <CardTitle className={`${syne.className} text-2xl`}>Demo extraction review</CardTitle>
+              <CardTitle className={`${dmSans.className} text-2xl font-medium`}>AI review card</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm text-zinc-200">
               <div>
@@ -109,7 +109,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
         </section>
 
         <section id="how-it-works" className="space-y-4">
-          <h2 className={`${bricolageGrotesque.className} text-3xl sm:text-4xl`}>How it works</h2>
+          <h2 className={`${syne.className} text-3xl sm:text-4xl`}>How it works</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {steps.map((step, index) => (
               <Card key={step} className="border-white/10 bg-white/5 text-white">
@@ -123,7 +123,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
         </section>
 
         <section className="space-y-4">
-          <h2 className={`${bricolageGrotesque.className} text-3xl sm:text-4xl`}>What we fix</h2>
+          <h2 className={`${syne.className} text-3xl sm:text-4xl`}>What we fix</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {pains.map((item) => (
               <Card key={item.pain} className="border-white/10 bg-white/5 text-white">
@@ -137,7 +137,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
         </section>
 
         <section className="space-y-4">
-          <h2 className={`${bricolageGrotesque.className} text-3xl sm:text-4xl`}>Core features</h2>
+          <h2 className={`${syne.className} text-3xl sm:text-4xl`}>Core features</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature) => (
               <div key={feature} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm text-zinc-200">
@@ -148,7 +148,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
         </section>
 
         <section className="space-y-4">
-          <h2 className={`${bricolageGrotesque.className} text-3xl sm:text-4xl`}>Simple pricing</h2>
+          <h2 className={`${syne.className} text-3xl sm:text-4xl`}>Simple pricing</h2>
           <div className="grid gap-4 md:grid-cols-2">
             <Card className="border-white/10 bg-white/5 text-white">
               <CardHeader>
@@ -172,7 +172,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
         </section>
 
         <section id="waitlist" className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-          <h2 className={`${bricolageGrotesque.className} text-3xl sm:text-4xl`}>Get early access</h2>
+          <h2 className={`${syne.className} text-3xl sm:text-4xl`}>Get early access</h2>
           <p className="mt-2 max-w-2xl text-zinc-300">
             Join the waitlist and we will invite you as we roll out onboarding.
             {waitlistCount > 0 ? ` ${waitlistCount.toLocaleString()} people are already in line.` : ""}

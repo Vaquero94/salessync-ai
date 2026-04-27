@@ -41,7 +41,10 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
       {/* Fixed navigation for quick top-level actions */}
       <nav
         className="fixed inset-x-0 top-0 z-50 bg-[#0D0D10]/90 backdrop-blur"
-        style={{ borderTop: "3px solid #7C6FFF" }}
+        style={{
+          borderTop: "4px solid #7C6FFF",
+          borderBottom: "1px solid rgba(124,111,255,0.2)",
+        }}
       >
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
           <BrandLogo variant="compact" priority />

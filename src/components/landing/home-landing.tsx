@@ -39,10 +39,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
   return (
     <main className={`${dmSans.className} min-h-screen bg-[#0D0D10] text-white`}>
       {/* Fixed navigation for quick top-level actions */}
-      <nav
-        className="fixed inset-x-0 top-0 z-50"
-        style={{ background: "#7C6FFF", borderTop: "none", borderBottom: "none" }}
-      >
+      <nav className="fixed inset-x-0 top-0 z-50" style={{ background: "#7C6FFF" }}>
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 text-[rgba(255,255,255,0.85)]">
           <span style={{ filter: "brightness(0) invert(1)" }} className="inline-flex shrink-0">
             <BrandLogo variant="compact" priority />

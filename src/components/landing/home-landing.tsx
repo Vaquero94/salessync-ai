@@ -88,7 +88,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
                 </ul>
               </div>
               <p className="rounded-md border border-[#7C6FFF]/40 bg-[#7C6FFF]/15 px-3 py-2 text-[#d2ccff]">
-                Rep review time: 27 seconds -{">"} Approve and sync.
+                Rep review time: 27 seconds to approve and sync.
               </p>
             </CardContent>
           </Card>

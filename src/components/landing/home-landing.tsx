@@ -24,7 +24,22 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
 
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 pb-20 pt-28 sm:px-6 lg:gap-16">
         <section className="mx-auto flex min-h-[80vh] w-full max-w-4xl flex-col items-center justify-center px-6 py-28 text-center md:py-36">
-          <p className="mb-6 inline-block rounded-full border border-[#7C6FFF]/50 bg-[#7C6FFF]/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-[#b9b0ff]">
+          <p
+            className="mb-6 inline-block rounded-full border border-[#86efac]/40 bg-[#86efac]/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-[#86efac]"
+            style={{ boxShadow: "0 0 12px rgba(134, 239, 172, 0.25)" }}
+          >
+            <span
+              style={{
+                display: "inline-block",
+                width: "6px",
+                height: "6px",
+                background: "#86efac",
+                borderRadius: "50%",
+                marginRight: "8px",
+                boxShadow: "0 0 6px rgba(134, 239, 172, 0.8)",
+                animation: "pulse 2s infinite",
+              }}
+            />
             NOW LIVE — HUBSPOT INTEGRATION
           </p>
           <h1 className={`${cabinetHeading} mb-6 text-balance text-5xl leading-[1.08] tracking-tight text-white md:text-6xl lg:text-7xl`}>

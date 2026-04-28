@@ -22,8 +22,8 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
     <main className={`${dmSans.className} min-h-screen bg-[#0D0D10] text-white`}>
       <Nav activePage="home" />
 
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 pb-20 pt-28 sm:px-6 lg:gap-16">
-        <section className="mx-auto flex min-h-[80vh] w-full max-w-4xl flex-col items-center justify-center px-6 py-28 text-center md:py-36">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 pb-20 sm:px-6 lg:gap-16">
+        <section className="mx-auto mt-16 flex min-h-[calc(100vh-64px)] w-full max-w-4xl flex-col items-center justify-center px-6 text-center">
           <p
             className="mb-6 inline-block rounded-full border border-[#86efac]/40 bg-[#86efac]/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-[#86efac]"
             style={{ boxShadow: "0 0 12px rgba(134, 239, 172, 0.25)" }}

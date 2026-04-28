@@ -86,7 +86,7 @@ export function HomeLanding({ waitlistCount }: HomeLandingProps) {
           ))}
         </section>
 
-        <LandingHowItWorksSection headingClassName={sectionHeadingClass} />
+        <LandingHowItWorksSection />
         <LandingWhatWeFixSection headingClassName={sectionHeadingClass} />
 
         <section className="space-y-4">

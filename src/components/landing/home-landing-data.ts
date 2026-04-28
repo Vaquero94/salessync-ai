@@ -5,13 +5,6 @@ export const stats = [
   "100% rep-controlled",
 ];
 
-export const steps = [
-  "Connect your CRM and calendar in under 2 minutes.",
-  "Zero Entry AI listens to calls, emails, and meetings.",
-  "AI extracts contacts, deal changes, tasks, and risks.",
-  "Rep approves in one click before anything syncs.",
-];
-
 export type PainItem = {
   pain: string;
   context: string;

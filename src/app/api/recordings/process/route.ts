@@ -261,7 +261,7 @@ export async function POST(request: Request) {
 
             await db
               .update(extractions)
-              .set({ approved: true, pushedToCrm: true })
+              .set({ approved: true, pushedToCrm: true, pushedAt: new Date() })
               .where(and(eq(extractions.id, extractionId), eq(extractions.userId, user.id)));
             console.info("Auto-pilot: pushed to HubSpot without review");
           } else {

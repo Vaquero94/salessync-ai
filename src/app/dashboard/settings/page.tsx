@@ -14,6 +14,7 @@ import { CheckCircle, XCircle, Link2 } from "lucide-react";
 import { CalendarIntegrationsSection } from "./CalendarIntegrationsSection";
 import { ConnectHubSpotButton } from "./ConnectHubSpotButton";
 import { DisconnectHubSpotButton } from "./DisconnectHubSpotButton";
+import { AutoPilotToggle } from "./AutoPilotToggle";
 
 export default async function DashboardSettingsPage({
   searchParams,
@@ -60,35 +61,41 @@ export default async function DashboardSettingsPage({
       .limit(1),
   ]);
 
+  const { data: userRow } = await supabase
+    .from("users")
+    .select("auto_pilot, auto_pilot_unlocked, approved_extraction_count")
+    .eq("id", user.id)
+    .single();
+
   const connected = hubspotConnection.length > 0;
   const googleCalConnected = googleConnection.length > 0;
   const outlookCalConnected = outlookConnection.length > 0;
   const params = await searchParams;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 text-white">
       <div>
-        <h1 className="text-2xl font-bold">Settings</h1>
-        <p className="mt-1 text-muted-foreground">
+        <h1 className="text-2xl font-bold text-white">Settings</h1>
+        <p className="mt-1 text-zinc-400">
           Manage your account and integrations
         </p>
       </div>
 
       {/* Status messages from OAuth callback */}
       {params.hubspot === "connected" && (
-        <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-3 text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
+        <div className="flex items-center gap-2 rounded-lg border border-emerald-400/30 bg-emerald-400/10 p-3 text-emerald-300">
           <CheckCircle className="h-5 w-5 shrink-0" />
           <span>HubSpot connected successfully.</span>
         </div>
       )}
       {params.calendar === "connected" && (
-        <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-3 text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
+        <div className="flex items-center gap-2 rounded-lg border border-emerald-400/30 bg-emerald-400/10 p-3 text-emerald-300">
           <CheckCircle className="h-5 w-5 shrink-0" />
           <span>Outlook calendar connected. The bot will automatically join your Zoom meetings.</span>
         </div>
       )}
       {params.google_calendar === "connected" && (
-        <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-3 text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
+        <div className="flex items-center gap-2 rounded-lg border border-emerald-400/30 bg-emerald-400/10 p-3 text-emerald-300">
           <CheckCircle className="h-5 w-5 shrink-0" />
           <span>
             Google Calendar connected. Invite bot@zeroentryai.co to meetings you want recorded; a
@@ -97,7 +104,7 @@ export default async function DashboardSettingsPage({
         </div>
       )}
       {params.error && (
-        <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+        <div className="flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-red-300">
           <XCircle className="h-5 w-5 shrink-0" />
           <span>
             {params.error === "hubspot_not_configured"
@@ -129,22 +136,22 @@ export default async function DashboardSettingsPage({
 
       {/* Connected CRMs */}
       <section>
-        <Card>
+        <Card className="border-white/10 bg-white/[0.03] text-white">
           <CardHeader>
             <CardTitle>Connected CRMs</CardTitle>
-            <CardDescription>
+            <CardDescription className="text-zinc-400">
               Connect your CRM to push approved extractions from sales calls
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border p-4">
+            <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-white/10 bg-white/[0.02] p-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900/30">
-                  <Link2 className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#7C6FFF]/20">
+                  <Link2 className="h-5 w-5 text-[#c4b5fd]" />
                 </div>
                 <div>
-                  <p className="font-medium">HubSpot</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="font-medium text-white">HubSpot</p>
+                  <p className="text-sm text-zinc-400">
                     {connected
                       ? `Connected ${hubspotConnection[0].connectedAt ? `on ${new Date(hubspotConnection[0].connectedAt).toLocaleDateString()}` : ""}`
                       : "Connect to sync contacts, deals, and notes"}
@@ -154,7 +161,7 @@ export default async function DashboardSettingsPage({
               <div className="flex items-center gap-2">
                 {connected ? (
                   <>
-                    <span className="inline-flex items-center gap-1 text-sm text-green-600 dark:text-green-400">
+                    <span className="inline-flex items-center gap-1 text-sm text-emerald-300">
                       <CheckCircle className="h-4 w-4" />
                       Connected
                     </span>
@@ -180,14 +187,20 @@ export default async function DashboardSettingsPage({
         }
       />
 
+      <AutoPilotToggle
+        unlocked={Boolean(userRow?.auto_pilot_unlocked)}
+        initialAutoPilot={Boolean(userRow?.auto_pilot)}
+        approvedCount={userRow?.approved_extraction_count ?? 0}
+      />
+
       <section>
-        <Card>
+        <Card className="border-white/10 bg-white/[0.03] text-white">
           <CardHeader>
             <CardTitle>Dashboard</CardTitle>
-            <CardDescription>Back to your main dashboard</CardDescription>
+            <CardDescription className="text-zinc-400">Back to your main dashboard</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="outline" asChild>
+            <Button variant="outline" asChild className="border-white/20 bg-transparent text-zinc-200 hover:bg-white/10">
               <Link href="/dashboard">Go to Dashboard</Link>
             </Button>
           </CardContent>

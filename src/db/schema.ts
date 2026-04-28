@@ -117,6 +117,7 @@ export const extractions = pgTable("extractions", {
   rawJson: jsonb("raw_json").notNull(),
   approved: boolean("approved").default(false).notNull(),
   pushedToCrm: boolean("pushed_to_crm").default(false).notNull(),
+  pushedAt: timestamp("pushed_at", { withTimezone: true }),
   dismissed: boolean("dismissed").default(false).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()

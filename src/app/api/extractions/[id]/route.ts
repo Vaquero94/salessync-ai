@@ -22,12 +22,12 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
 
-    const action = body.action as "approve" | "dismiss";
+    const action = body.action as "approve" | "dismiss" | "update";
     const rawJson = body.rawJson as Record<string, unknown> | undefined;
 
-    if (!["approve", "dismiss"].includes(action)) {
+    if (!["approve", "dismiss", "update"].includes(action)) {
       return NextResponse.json(
-        { error: "Invalid action. Use 'approve' or 'dismiss'" },
+        { error: "Invalid action. Use 'approve', 'dismiss', or 'update'" },
         { status: 400 }
       );
     }
@@ -62,6 +62,7 @@ export async function PATCH(
           rawJson: approvedRawJson as Record<string, unknown>,
           approved: true,
           pushedToCrm: false,
+          pushedAt: null,
         })
         .where(and(eq(extractions.id, id), eq(extractions.userId, user.id)));
 
@@ -135,7 +136,7 @@ export async function PATCH(
 
       await db
         .update(extractions)
-        .set({ pushedToCrm: true })
+        .set({ pushedToCrm: true, pushedAt: new Date() })
         .where(and(eq(extractions.id, id), eq(extractions.userId, user.id)));
 
       return NextResponse.json({
@@ -144,6 +145,20 @@ export async function PATCH(
         approvedExtractionCount: updatedUser[0]?.approvedExtractionCount,
         autoPilotUnlocked: updatedUser[0]?.autoPilotUnlocked,
       });
+    }
+
+    if (action === "update") {
+      if (!rawJson) {
+        return NextResponse.json(
+          { error: "rawJson required for update" },
+          { status: 400 }
+        );
+      }
+      await db
+        .update(extractions)
+        .set({ rawJson: rawJson as Record<string, unknown> })
+        .where(and(eq(extractions.id, id), eq(extractions.userId, user.id)));
+      return NextResponse.json({ success: true });
     }
 
     await db

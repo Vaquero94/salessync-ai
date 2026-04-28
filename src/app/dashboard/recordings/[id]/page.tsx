@@ -14,7 +14,7 @@ export default async function RecordingDetailPage({ params }: PageProps) {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: recording }, { data: extraction }, { data: userRow }] = await Promise.all([
+  const [{ data: recording }, { data: extraction }] = await Promise.all([
     supabase
       .from("recordings")
       .select("id, source, created_at, duration_minutes")
@@ -23,14 +23,9 @@ export default async function RecordingDetailPage({ params }: PageProps) {
       .single(),
     supabase
       .from("extractions")
-      .select("id, approved, pushed_to_crm, pushed_at, raw_json")
+      .select("id, approved, dismissed, pushed_to_crm, pushed_at, raw_json")
       .eq("recording_id", id)
       .eq("user_id", user.id)
-      .single(),
-    supabase
-      .from("users")
-      .select("auto_pilot")
-      .eq("id", user.id)
       .single(),
   ]);
 
@@ -45,14 +40,13 @@ export default async function RecordingDetailPage({ params }: PageProps) {
   return (
     <RecordingDetailClient
       extractionId={extraction.id}
-      recordingId={recording.id}
       source={recording.source}
       createdAt={recording.created_at}
       durationMinutes={recording.duration_minutes}
-      approved={extraction.approved}
-      pushedToCrm={extraction.pushed_to_crm}
+      approved={Boolean(extraction.approved)}
+      pushedToCrm={Boolean(extraction.pushed_to_crm)}
       pushedAt={extraction.pushed_at}
-      autoPilot={Boolean(userRow?.auto_pilot)}
+      dismissed={Boolean(extraction.dismissed)}
       rawJson={(extraction.raw_json as Record<string, unknown>) ?? {}}
     />
   );

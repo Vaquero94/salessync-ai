@@ -15,6 +15,7 @@ import { CalendarIntegrationsSection } from "./CalendarIntegrationsSection";
 import { ConnectHubSpotButton } from "./ConnectHubSpotButton";
 import { DisconnectHubSpotButton } from "./DisconnectHubSpotButton";
 import { AutoPilotToggle } from "./AutoPilotToggle";
+import { CapturePreferencesSection } from "./CapturePreferencesSection";
 
 export default async function DashboardSettingsPage({
   searchParams,
@@ -193,15 +194,17 @@ export default async function DashboardSettingsPage({
         approvedCount={userRow?.approved_extraction_count ?? 0}
       />
 
+      <CapturePreferencesSection />
+
       <section>
         <Card className="border-white/10 bg-white/[0.03] text-white">
           <CardHeader>
-            <CardTitle>Dashboard</CardTitle>
-            <CardDescription className="text-zinc-400">Back to your main dashboard</CardDescription>
+            <CardTitle>Inbox</CardTitle>
+            <CardDescription className="text-zinc-400">Review new extractions and approve pushes</CardDescription>
           </CardHeader>
           <CardContent>
             <Button variant="outline" asChild className="border-white/20 bg-transparent text-zinc-200 hover:bg-white/10">
-              <Link href="/dashboard">Go to Dashboard</Link>
+              <Link href="/dashboard">Go to Inbox</Link>
             </Button>
           </CardContent>
         </Card>

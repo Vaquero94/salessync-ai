@@ -66,6 +66,8 @@ export const users = pgTable("users", {
   autoPilot: boolean("auto_pilot").default(false).notNull(),
   autoPilotUnlocked: boolean("auto_pilot_unlocked").default(false).notNull(),
   approvedExtractionCount: integer("approved_extraction_count").default(0).notNull(),
+  /** Inbox card visibility toggles; full extraction always stored in raw_json. */
+  capturePreferences: jsonb("capture_preferences"),
 });
 
 /**

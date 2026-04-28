@@ -3,10 +3,13 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { ensureUserExists } from "@/lib/ensure-user";
 import { createDeepgramClient } from "@/lib/deepgram";
 import { createOpenAIClient } from "@/lib/openai";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { createDb } from "@/db";
-import { recordings, extractions } from "@/db/schema";
+import { recordings, extractions, users, crmConnections } from "@/db/schema";
 import { NextResponse } from "next/server";
+import { pushExtractionToHubSpot } from "@/lib/crm/hubspot";
+import { hasExtractableSalesData } from "@/lib/crm/extraction-qualify";
+import type { ExtractionData } from "@/components/ReviewCard";
 
 const EXTRACTION_SYSTEM_PROMPT = `You are a sales call data extractor. Given a transcript, extract: contacts (name, role, company, email), deal info (value, stage change, close date), action items (owner, task, due date), objections, a 2-sentence summary, and sentiment. Return valid JSON only. If a field was not mentioned, set it to null. Never guess.
 
@@ -184,13 +187,91 @@ export async function POST(request: Request) {
     }
 
     try {
-      await db.insert(extractions).values({
+      const insertedExtraction = await db
+        .insert(extractions)
+        .values({
         recordingId: recording.id,
         userId: user.id,
         rawJson: extractionJson as Record<string, unknown>,
         approved: false,
         pushedToCrm: false,
-      });
+        })
+        .returning({ id: extractions.id });
+
+      const extractionId = insertedExtraction[0]?.id;
+      if (!extractionId) {
+        throw new Error("Failed to retrieve inserted extraction id");
+      }
+
+      const userSettings = await db
+        .select({
+          autoPilot: users.autoPilot,
+          autoPilotUnlocked: users.autoPilotUnlocked,
+        })
+        .from(users)
+        .where(eq(users.id, user.id))
+        .limit(1);
+
+      if (userSettings[0]?.autoPilot && userSettings[0]?.autoPilotUnlocked) {
+        const extractionPayload = extractionJson as ExtractionData;
+        if (!hasExtractableSalesData(extractionPayload)) {
+          console.info("Skipped HubSpot push — no extractable sales data found.");
+          await db
+            .update(extractions)
+            .set({ approved: true })
+            .where(and(eq(extractions.id, extractionId), eq(extractions.userId, user.id)));
+        } else {
+          const hubspotConn = await db
+            .select()
+            .from(crmConnections)
+            .where(and(eq(crmConnections.userId, user.id), eq(crmConnections.crmType, "hubspot")))
+            .limit(1);
+
+          if (hubspotConn.length > 0) {
+            const redirectUri = `${new URL(request.url).origin}/api/crm/hubspot/callback`;
+            const result = await pushExtractionToHubSpot(
+              {
+                id: hubspotConn[0].id,
+                accessToken: hubspotConn[0].accessToken,
+                refreshToken: hubspotConn[0].refreshToken,
+              },
+              extractionPayload,
+              redirectUri,
+              async (newAccess, newRefresh) => {
+                await db
+                  .update(crmConnections)
+                  .set({
+                    accessToken: newAccess,
+                    refreshToken: newRefresh ?? hubspotConn[0].refreshToken,
+                  })
+                  .where(eq(crmConnections.id, hubspotConn[0].id));
+              }
+            );
+
+            if (!result.success) {
+              console.error("Auto-pilot HubSpot push failed:", result.error);
+              return NextResponse.json(
+                {
+                  error: "Auto-pilot HubSpot push failed",
+                  details: result.error ?? "Unknown HubSpot push error",
+                },
+                { status: 500 }
+              );
+            }
+
+            await db
+              .update(extractions)
+              .set({ approved: true, pushedToCrm: true })
+              .where(and(eq(extractions.id, extractionId), eq(extractions.userId, user.id)));
+            console.info("Auto-pilot: pushed to HubSpot without review");
+          } else {
+            await db
+              .update(extractions)
+              .set({ approved: true })
+              .where(and(eq(extractions.id, extractionId), eq(extractions.userId, user.id)));
+          }
+        }
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       await db

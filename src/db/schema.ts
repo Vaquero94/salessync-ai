@@ -63,6 +63,9 @@ export const users = pgTable("users", {
   subscriptionEndDate: timestamp("subscription_end_date", {
     withTimezone: true,
   }),
+  autoPilot: boolean("auto_pilot").default(false).notNull(),
+  autoPilotUnlocked: boolean("auto_pilot_unlocked").default(false).notNull(),
+  approvedExtractionCount: integer("approved_extraction_count").default(0).notNull(),
 });
 
 /**

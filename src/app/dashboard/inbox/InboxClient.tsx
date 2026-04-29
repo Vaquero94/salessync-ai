@@ -3,9 +3,10 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import type { CapturePreferences } from "@/lib/capture-preferences";
+import { StatusBar } from "@/app/dashboard/StatusBar";
 
 type Json = Record<string, unknown>;
 
@@ -26,9 +27,21 @@ type Props = {
   initialPending: InboxRow[];
   initialDone: InboxRow[];
   preferences: CapturePreferences;
+  processingCount: number;
+  failedCount: number;
+  autoPilot: boolean;
+  hasCrmConnection: boolean;
 };
 
-export function InboxClient({ initialPending, initialDone, preferences }: Props) {
+export function InboxClient({
+  initialPending,
+  initialDone,
+  preferences,
+  processingCount,
+  failedCount,
+  autoPilot,
+  hasCrmConnection,
+}: Props) {
   const router = useRouter();
   const [pending, setPending] = useState(initialPending);
   const [done, setDone] = useState(initialDone);
@@ -37,6 +50,14 @@ export function InboxClient({ initialPending, initialDone, preferences }: Props)
   const [, startTransition] = useTransition();
 
   const pendingCount = pending.length;
+
+  useEffect(() => {
+    if (processingCount <= 0) return;
+    const interval = setInterval(() => {
+      router.refresh();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [processingCount, router]);
 
   function fadeOut(id: string, then: () => void) {
     setExiting((s) => ({ ...s, [id]: true }));
@@ -111,6 +132,13 @@ export function InboxClient({ initialPending, initialDone, preferences }: Props)
             </span>
           ) : null}
         </div>
+        <StatusBar
+          processingCount={processingCount}
+          failedCount={failedCount}
+          pendingCount={pendingCount}
+          autoPilot={autoPilot}
+          hasCrmConnection={hasCrmConnection}
+        />
 
         {pending.length === 0 ? (
           <div className="flex flex-col items-center py-16 text-center">

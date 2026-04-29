@@ -13,6 +13,7 @@ type RecordingRow = {
   source: string;
   duration_minutes: number | null;
   created_at: string;
+  status?: "processing" | "complete" | "failed" | null;
 };
 
 /** Extraction row merged with optional recording (no PostgREST embed). */
@@ -56,7 +57,7 @@ export default async function InboxPage() {
   try {
     const { data: userRow, error: userError } = await supabase
       .from("users")
-      .select("capture_preferences")
+      .select("capture_preferences, auto_pilot")
       .eq("id", user.id)
       .maybeSingle();
 
@@ -82,28 +83,34 @@ export default async function InboxPage() {
     }
 
     const recordingIds = extractions?.map((e) => e.recording_id).filter(Boolean) ?? [];
+    const [{ data: statusRows, error: statusRowsError }, { data: crmRows, error: crmRowsError }] =
+      await Promise.all([
+        supabase.from("recordings").select("id, status").eq("user_id", user.id),
+        supabase.from("crm_connections").select("id").eq("user_id", user.id).limit(1),
+      ]);
 
-    let recordings: RecordingRow[] | null = null;
-    let recordingsError: { message: string } | null = null;
+    if (statusRowsError) {
+      console.error("[InboxPage] recordings status query failed:", statusRowsError);
+    }
+    if (crmRowsError) {
+      console.error("[InboxPage] crm_connections query failed:", crmRowsError);
+    }
 
+    let recordings: RecordingRow[] | null = [];
     if (recordingIds.length > 0) {
-      const res = await supabase
+      const { data, error } = await supabase
         .from("recordings")
         .select("id, source, duration_minutes, created_at")
         .in("id", recordingIds);
-      recordings = res.data as RecordingRow[] | null;
-      recordingsError = res.error;
-    } else {
-      recordings = [];
-    }
-
-    if (recordingsError) {
-      console.error("[InboxPage] recordings batch query failed:", recordingsError);
-      return (
-        <div className="mx-auto max-w-5xl px-6 pt-20 text-sm text-red-300">
-          Could not load inbox. Please refresh.
-        </div>
-      );
+      recordings = (data as RecordingRow[] | null) ?? [];
+      if (error) {
+        console.error("[InboxPage] recordings batch query failed:", error);
+        return (
+          <div className="mx-auto max-w-5xl px-6 pt-20 text-sm text-red-300">
+            Could not load inbox. Please refresh.
+          </div>
+        );
+      }
     }
 
     const recordingMap = new Map(recordings?.map((r) => [r.id, r]) ?? []);
@@ -134,8 +141,22 @@ export default async function InboxPage() {
       })
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
+    const processingCount =
+      statusRows?.filter((r) => r.status === "processing").length ?? 0;
+    const failedCount = statusRows?.filter((r) => r.status === "failed").length ?? 0;
+    const hasCrmConnection = (crmRows?.length ?? 0) > 0;
+    const autoPilot = Boolean(userRow?.auto_pilot);
+
     return (
-      <InboxClient initialPending={pending} initialDone={done} preferences={preferences} />
+      <InboxClient
+        initialPending={pending}
+        initialDone={done}
+        preferences={preferences}
+        processingCount={processingCount}
+        failedCount={failedCount}
+        autoPilot={autoPilot}
+        hasCrmConnection={hasCrmConnection}
+      />
     );
   } catch (error) {
     console.error("[InboxPage] unexpected error:", error);

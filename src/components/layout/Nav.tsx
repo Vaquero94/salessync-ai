@@ -18,7 +18,7 @@ export function Nav({ activePage }: NavProps) {
   const isPricing = activePage === "pricing";
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-50 h-16 w-full" style={{ background: "#7C6FFF" }}>
+    <nav className="fixed inset-x-0 top-0 z-50 h-16 w-full bg-[#7C6FFF]">
       <div className="mx-auto flex h-full max-w-6xl items-center gap-3 px-4 sm:gap-6 sm:px-6">
         <span style={{ filter: "brightness(0) invert(1)" }} className="inline-flex shrink-0">
           <BrandLogo variant="compact" priority />
@@ -33,14 +33,13 @@ export function Nav({ activePage }: NavProps) {
           </Link>
         </div>
 
-        <Button asChild size="lg" className="shrink-0 border-0 bg-transparent p-0 shadow-none hover:bg-transparent">
+        <Button asChild className="h-auto shrink-0 border-0 bg-transparent p-0 shadow-none hover:bg-transparent">
           <Link
             href="/#waitlist"
-            className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-md px-5 text-sm transition-opacity hover:opacity-90 sm:px-8"
+            className="inline-flex items-center justify-center whitespace-nowrap rounded-lg px-5 py-2 text-sm font-semibold transition-opacity hover:opacity-90"
             style={{
               background: "#fff",
               color: "#5B4FE8",
-              fontWeight: "600",
               border: "none",
             }}
           >

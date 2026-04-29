@@ -7,10 +7,7 @@ import {
 } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { CheckCircle, XCircle, Link2 } from "lucide-react";
+import { CheckCircle, XCircle } from "lucide-react";
 import { CalendarIntegrationsSection } from "./CalendarIntegrationsSection";
 import { ConnectHubSpotButton } from "./ConnectHubSpotButton";
 import { DisconnectHubSpotButton } from "./DisconnectHubSpotButton";
@@ -74,10 +71,10 @@ export default async function DashboardSettingsPage({
   const params = await searchParams;
 
   return (
-    <div className="space-y-8 text-white">
+    <div className="mx-auto max-w-2xl px-6 pb-16 pt-8 text-white">
       <div>
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="mt-1 text-zinc-400">
+        <h1 className="mb-1 text-xl font-bold tracking-tight text-white">Settings</h1>
+        <p className="mb-8 text-sm text-zinc-500">
           Manage your account and integrations
         </p>
       </div>
@@ -137,44 +134,37 @@ export default async function DashboardSettingsPage({
 
       {/* Connected CRMs */}
       <section>
-        <Card className="border-white/10 bg-white/[0.03] text-white">
-          <CardHeader>
-            <CardTitle>Connected CRMs</CardTitle>
-            <CardDescription className="text-zinc-400">
-              Connect your CRM to push approved extractions from sales calls
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-white/10 bg-white/[0.02] p-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#7C6FFF]/20">
-                  <Link2 className="h-5 w-5 text-[#c4b5fd]" />
-                </div>
-                <div>
-                  <p className="font-medium text-white">HubSpot</p>
-                  <p className="text-sm text-zinc-400">
-                    {connected
-                      ? `Connected ${hubspotConnection[0].connectedAt ? `on ${new Date(hubspotConnection[0].connectedAt).toLocaleDateString()}` : ""}`
-                      : "Connect to sync contacts, deals, and notes"}
-                  </p>
-                </div>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-zinc-500">CRM</p>
+        <div className="mb-6 overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.03]">
+          <div className="flex items-center justify-between px-4 py-3.5">
+            <div className="flex items-center">
+              <div className="mr-3 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF7A59] text-[10px] font-bold text-white">
+                H
               </div>
-              <div className="flex items-center gap-2">
-                {connected ? (
-                  <>
-                    <span className="inline-flex items-center gap-1 text-sm text-emerald-300">
-                      <CheckCircle className="h-4 w-4" />
-                      Connected
-                    </span>
-                    <DisconnectHubSpotButton connectionId={hubspotConnection[0].id} />
-                  </>
-                ) : (
-                  <ConnectHubSpotButton />
-                )}
+              <div>
+                <p className="text-sm font-medium text-white">HubSpot</p>
+                <p className="mt-0.5 text-xs text-zinc-500">
+                  {connected
+                    ? `Connected ${hubspotConnection[0].connectedAt ? new Date(hubspotConnection[0].connectedAt).toLocaleDateString() : ""}`
+                    : "Connect to sync contacts, deals, and activities"}
+                </p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+            <div className="flex items-center">
+              {connected ? (
+                <>
+                  <span className="mr-3 inline-flex items-center gap-1 text-xs text-[#86efac]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#86efac]" />
+                    Connected
+                  </span>
+                  <DisconnectHubSpotButton connectionId={hubspotConnection[0].id} />
+                </>
+              ) : (
+                <ConnectHubSpotButton />
+              )}
+            </div>
+          </div>
+        </div>
       </section>
 
       <CalendarIntegrationsSection
@@ -188,27 +178,13 @@ export default async function DashboardSettingsPage({
         }
       />
 
+      <CapturePreferencesSection />
+
       <AutoPilotToggle
         unlocked={Boolean(userRow?.auto_pilot_unlocked)}
         initialAutoPilot={Boolean(userRow?.auto_pilot)}
         approvedCount={userRow?.approved_extraction_count ?? 0}
       />
-
-      <CapturePreferencesSection />
-
-      <section>
-        <Card className="border-white/10 bg-white/[0.03] text-white">
-          <CardHeader>
-            <CardTitle>Inbox</CardTitle>
-            <CardDescription className="text-zinc-400">Review new extractions and approve pushes</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button variant="outline" asChild className="border-white/20 bg-transparent text-zinc-200 hover:bg-white/10">
-              <Link href="/dashboard">Go to Inbox</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </section>
     </div>
   );
 }

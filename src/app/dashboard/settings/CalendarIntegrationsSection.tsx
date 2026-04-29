@@ -1,5 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, CalendarCheck } from "lucide-react";
+import { CalendarCheck } from "lucide-react";
 import { ConnectGoogleCalendarButton } from "./ConnectGoogleCalendarButton";
 import { ConnectOutlookCalendarButton } from "./ConnectOutlookCalendarButton";
 import { DisconnectGoogleCalendarButton } from "./DisconnectGoogleCalendarButton";
@@ -20,63 +19,56 @@ export function CalendarIntegrationsSection({
 }: Props) {
   return (
     <section>
-      <Card className="border-white/10 bg-white/[0.03] text-white">
-        <CardHeader>
-          <CardTitle>Calendar Integration</CardTitle>
-          <CardDescription className="text-zinc-400">
-            Google: invite bot@zeroentryai.co to meetings you want recorded. Outlook: Recall connects
-            your calendar for automatic Zoom joins.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-white/10 bg-white/[0.02] p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#7C6FFF]/20">
-                <CalendarCheck className="h-5 w-5 text-[#c4b5fd]" />
-              </div>
-              <div>
-                <p className="font-medium text-white">Google Calendar</p>
-                <p className="text-sm text-zinc-400">
-                  {googleCalConnected
-                    ? `Connected ${googleConnectedAt ? `on ${googleConnectedAt.toLocaleDateString()}` : ""}. Meetings that include bot@zeroentryai.co get a Recall bot automatically.`
-                    : "Connect to scan your calendar every 15 minutes for meetings with the notetaker bot invited."}
-                </p>
-              </div>
+      <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-zinc-500">Calendar</p>
+      <div className="mb-6 overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.03]">
+        <div className="flex items-center justify-between px-4 py-3.5">
+          <div className="flex items-center">
+            <div className="mr-3 flex h-5 w-5 items-center justify-center rounded-full bg-[#7C6FFF]/30">
+              <CalendarCheck className="h-3.5 w-3.5 text-[#c4b5fd]" />
             </div>
-            <div className="flex items-center gap-2">
-              {googleCalConnected ? (
-                <>
-                  <span className="inline-flex items-center gap-1 text-sm text-emerald-300">
-                    <CheckCircle className="h-4 w-4" />
-                    Connected
-                  </span>
-                  <DisconnectGoogleCalendarButton />
-                </>
-              ) : (
-                <ConnectGoogleCalendarButton />
-              )}
+            <div>
+              <p className="text-sm font-medium text-white">Google Calendar</p>
+              <p className="mt-0.5 text-xs text-zinc-500">
+                {googleCalConnected
+                  ? `Connected ${googleConnectedAt ? googleConnectedAt.toLocaleDateString() : ""}`
+                  : "Invite bot@zeroentryai.co to meetings you want recorded"}
+              </p>
             </div>
           </div>
-
-          <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-white/10 bg-white/[0.02] p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#7C6FFF]/20">
-                <CalendarCheck className="h-5 w-5 text-[#c4b5fd]" />
+          <div className="flex items-center">
+            {googleCalConnected ? (
+              <>
+                <span className="mr-3 inline-flex items-center gap-1 text-xs text-[#86efac]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#86efac]" />
+                  Connected
+                </span>
+                <DisconnectGoogleCalendarButton />
+              </>
+            ) : (
+              <ConnectGoogleCalendarButton />
+            )}
+          </div>
+        </div>
+        <div className="border-t border-white/[0.05]">
+          <div className="flex items-center justify-between px-4 py-3.5">
+            <div className="flex items-center">
+              <div className="mr-3 flex h-5 w-5 items-center justify-center rounded-full bg-[#60a5fa]/25">
+                <CalendarCheck className="h-3.5 w-3.5 text-[#93c5fd]" />
               </div>
               <div>
-                <p className="font-medium text-white">Outlook Calendar</p>
-                <p className="text-sm text-zinc-400">
+                <p className="text-sm font-medium text-white">Outlook Calendar</p>
+                <p className="mt-0.5 text-xs text-zinc-500">
                   {outlookCalConnected
-                    ? `Connected ${outlookConnectedAt ? `on ${outlookConnectedAt.toLocaleDateString()}` : ""}. Bot joins Zoom meetings via Recall.ai.`
-                    : "Connect via Recall.ai so the bot joins Zoom meetings from your Outlook calendar."}
+                    ? `Connected ${outlookConnectedAt ? outlookConnectedAt.toLocaleDateString() : ""}`
+                    : "Auto-join Zoom meetings from your Outlook calendar"}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
               {outlookCalConnected ? (
                 <>
-                  <span className="inline-flex items-center gap-1 text-sm text-emerald-300">
-                    <CheckCircle className="h-4 w-4" />
+                  <span className="mr-3 inline-flex items-center gap-1 text-xs text-[#86efac]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#86efac]" />
                     Connected
                   </span>
                   <DisconnectOutlookCalendarButton />
@@ -86,8 +78,8 @@ export function CalendarIntegrationsSection({
               )}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </section>
   );
 }

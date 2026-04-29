@@ -63,8 +63,8 @@ export function CapturePreferencesSection() {
   if (!loaded) {
     return (
       <section className="space-y-3">
-        <div className="h-5 w-48 animate-pulse rounded bg-white/[0.07]" />
-        <div className="h-4 max-w-md animate-pulse rounded bg-white/[0.05]" />
+        <div className="h-4 w-36 animate-pulse rounded bg-white/[0.07]" />
+        <div className="h-3 w-80 animate-pulse rounded bg-white/[0.05]" />
         <div className="h-14 animate-pulse rounded-xl bg-white/[0.05]" />
         <div className="h-14 animate-pulse rounded-xl bg-white/[0.05]" />
       </section>
@@ -73,22 +73,24 @@ export function CapturePreferencesSection() {
 
   return (
     <section>
-      <h2 className="mb-1 text-[15px] font-semibold text-white">Capture preferences</h2>
-      <p className="mb-5 text-sm text-zinc-500">
-        Choose what appears on your inbox cards. Everything is always stored in the full record.
+      <p className="mb-1 text-[11px] font-semibold uppercase tracking-widest text-zinc-500">
+        Capture preferences
+      </p>
+      <p className="mb-2 text-xs text-zinc-600">
+        Shown on inbox cards. Everything is always stored in the full record.
       </p>
 
-      <div className="space-y-2">
+      <div className="mb-6 overflow-hidden rounded-xl border border-white/[0.07] bg-white/[0.03]">
         {ROWS.map((row) => (
           <button
             key={row.key}
             type="button"
             onClick={() => toggle(row.key)}
-            className="flex w-full items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-3.5 text-left transition hover:bg-white/[0.05]"
+            className="flex w-full items-center justify-between border-b border-white/[0.05] px-4 py-3.5 text-left transition last:border-b-0 hover:bg-white/[0.03]"
           >
             <div>
-              <p className="text-[13px] font-medium text-white">{row.label}</p>
-              <p className="mt-0.5 text-[12px] text-zinc-500">{row.description}</p>
+              <p className="text-sm font-medium text-white">{row.label}</p>
+              <p className="mt-0.5 text-xs text-zinc-500">{row.description}</p>
             </div>
             <span
               className={`relative ml-4 inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ${
@@ -106,10 +108,6 @@ export function CapturePreferencesSection() {
           </button>
         ))}
       </div>
-
-      <p className="mt-3 text-xs text-zinc-600">
-        Turned-off fields are still captured and stored. View them anytime in the full record.
-      </p>
     </section>
   );
 }

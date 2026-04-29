@@ -26,7 +26,13 @@ export function DisconnectOutlookCalendarButton() {
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={handleDisconnect} disabled={loading}>
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={handleDisconnect}
+      disabled={loading}
+      className="h-auto rounded-lg border-white/10 bg-transparent px-3 py-1.5 text-xs text-zinc-500 shadow-none hover:border-white/20 hover:bg-transparent hover:text-zinc-300"
+    >
       {loading ? "Disconnecting…" : "Disconnect"}
     </Button>
   );

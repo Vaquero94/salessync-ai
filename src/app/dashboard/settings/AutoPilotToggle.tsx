@@ -1,22 +1,17 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Lock } from "lucide-react";
 
 type Props = {
-  unlocked: boolean;
   initialAutoPilot: boolean;
-  approvedCount: number;
 };
 
-export function AutoPilotToggle({ unlocked, initialAutoPilot, approvedCount }: Props) {
+export function AutoPilotToggle({ initialAutoPilot }: Props) {
   const [autoPilot, setAutoPilot] = useState(initialAutoPilot);
   const [isPending, startTransition] = useTransition();
-  const clampedCount = Math.max(0, Math.min(approvedCount, 10));
-  const progress = Math.min(100, Math.round((clampedCount / 10) * 100));
 
   function onToggle() {
-    if (!unlocked || isPending) return;
+    if (isPending) return;
     const next = !autoPilot;
     setAutoPilot(next);
     startTransition(async () => {
@@ -38,11 +33,7 @@ export function AutoPilotToggle({ unlocked, initialAutoPilot, approvedCount }: P
         <div className="flex items-center justify-between px-4 py-3.5">
           <div>
             <p className="text-sm font-medium text-white">Auto-pilot mode</p>
-            {!unlocked ? (
-              <p className="mt-0.5 text-xs text-zinc-500">
-                Complete {clampedCount} of 10 approvals to unlock
-              </p>
-            ) : autoPilot ? (
+            {autoPilot ? (
               <p className="mt-0.5 text-xs text-[#86efac]">
                 Extractions push automatically without review
               </p>
@@ -52,46 +43,39 @@ export function AutoPilotToggle({ unlocked, initialAutoPilot, approvedCount }: P
               </p>
             )}
           </div>
-          {!unlocked ? (
-            <div className="flex items-center gap-2">
-              <Lock className="h-3.5 w-3.5 text-zinc-600" />
-              <button
-                type="button"
-                disabled
-                className="relative h-6 w-11 cursor-not-allowed rounded-full bg-zinc-800"
-                aria-label="Auto-pilot locked"
-                aria-pressed={false}
-              >
-                <span className="absolute top-1 h-4 w-4 translate-x-0.5 rounded-full bg-zinc-500" />
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={onToggle}
-              disabled={isPending}
-              className={`relative h-6 w-11 rounded-full transition ${
-                autoPilot ? "bg-[#7C6FFF]" : "bg-zinc-700"
+          <button
+            type="button"
+            onClick={onToggle}
+            disabled={isPending}
+            className={`relative h-6 w-11 rounded-full transition ${
+              autoPilot ? "bg-[#7C6FFF]" : "bg-zinc-700"
+            }`}
+            aria-label="Toggle auto-pilot mode"
+            aria-pressed={autoPilot}
+          >
+            <span
+              className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
+                autoPilot ? "translate-x-5" : "translate-x-0.5"
               }`}
-              aria-label="Toggle auto-pilot mode"
-              aria-pressed={autoPilot}
-            >
-              <span
-                className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
-                  autoPilot ? "translate-x-6" : "translate-x-0.5"
-                }`}
-              />
-            </button>
-          )}
+            />
+          </button>
         </div>
-        {!unlocked ? (
-          <div className="px-4 pb-3">
-            <div className="h-1 w-full rounded-full bg-white/[0.05]">
-              <div className="h-1 rounded-full bg-[#7C6FFF]" style={{ width: `${progress}%` }} />
+        <div className="border-t border-white/[0.05] bg-amber-500/[0.06] px-4 py-3">
+          <div className="flex items-start">
+            <span className="mr-2 text-sm text-amber-400">⚠</span>
+            <div>
+              <p className="text-xs leading-relaxed text-amber-400/80">
+                AI extractions can occasionally hallucinate — inventing contacts, deal values, or
+                action items that weren&apos;t mentioned. With auto-pilot on, errors go straight to
+                HubSpot without a human check.
+              </p>
+              <p className="mt-1.5 text-xs text-zinc-600">
+                Every push is logged in History. You can review and correct any entry in HubSpot at any
+                time.
+              </p>
             </div>
-            <p className="mt-1.5 text-xs text-zinc-600">{clampedCount} / 10 approvals</p>
           </div>
-        ) : null}
+        </div>
       </div>
     </section>
   );

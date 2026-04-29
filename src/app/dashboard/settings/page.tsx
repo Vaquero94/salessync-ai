@@ -61,7 +61,7 @@ export default async function DashboardSettingsPage({
 
   const { data: userRow } = await supabase
     .from("users")
-    .select("auto_pilot, auto_pilot_unlocked, approved_extraction_count")
+    .select("auto_pilot")
     .eq("id", user.id)
     .single();
 
@@ -181,9 +181,7 @@ export default async function DashboardSettingsPage({
       <CapturePreferencesSection />
 
       <AutoPilotToggle
-        unlocked={Boolean(userRow?.auto_pilot_unlocked)}
         initialAutoPilot={Boolean(userRow?.auto_pilot)}
-        approvedCount={userRow?.approved_extraction_count ?? 0}
       />
     </div>
   );

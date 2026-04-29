@@ -102,7 +102,7 @@ export function InboxClient({ initialPending, initialDone, preferences }: Props)
 
   return (
     <div className="min-h-screen bg-[#0D0D10]">
-      <div className="mx-auto max-w-2xl px-6 pb-12 pt-20">
+      <div className="mx-auto max-w-5xl px-6 pb-12 pt-20">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-[22px] font-bold tracking-tight text-white">Inbox</h1>
           {pendingCount > 0 ? (

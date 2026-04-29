@@ -36,7 +36,9 @@ export default async function DashboardLayout({
   return (
     <div className="min-h-screen bg-[#0D0D10] text-white">
       <DashboardNav pendingCount={pendingCount ?? 0} avatarInitial={avatarInitial} />
-      <main className="w-full pt-16">{children}</main>
+      <main className="w-full pt-16">
+        <div className="mx-auto max-w-5xl px-6">{children}</div>
+      </main>
     </div>
   );
 }

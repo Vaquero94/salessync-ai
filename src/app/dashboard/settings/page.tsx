@@ -71,7 +71,7 @@ export default async function DashboardSettingsPage({
   const params = await searchParams;
 
   return (
-    <div className="mx-auto max-w-2xl px-6 pb-16 pt-8 text-white">
+    <div className="mx-auto max-w-5xl px-6 pb-16 pt-8 text-white">
       <div>
         <h1 className="mb-1 text-xl font-bold tracking-tight text-white">Settings</h1>
         <p className="mb-8 text-sm text-zinc-500">

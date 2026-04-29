@@ -75,7 +75,7 @@ export default async function InboxPage() {
     if (extractionsError) {
       console.error("[InboxPage] extractions query failed:", extractionsError);
       return (
-        <div className="mx-auto max-w-2xl px-6 pt-20 text-sm text-red-300">
+        <div className="mx-auto max-w-5xl px-6 pt-20 text-sm text-red-300">
           Could not load inbox. Please refresh.
         </div>
       );
@@ -100,7 +100,7 @@ export default async function InboxPage() {
     if (recordingsError) {
       console.error("[InboxPage] recordings batch query failed:", recordingsError);
       return (
-        <div className="mx-auto max-w-2xl px-6 pt-20 text-sm text-red-300">
+        <div className="mx-auto max-w-5xl px-6 pt-20 text-sm text-red-300">
           Could not load inbox. Please refresh.
         </div>
       );
@@ -140,7 +140,7 @@ export default async function InboxPage() {
   } catch (error) {
     console.error("[InboxPage] unexpected error:", error);
     return (
-      <div className="mx-auto max-w-2xl px-6 pt-20 text-sm text-red-300">
+      <div className="mx-auto max-w-5xl px-6 pt-20 text-sm text-red-300">
         Could not load inbox. Please refresh.
       </div>
     );

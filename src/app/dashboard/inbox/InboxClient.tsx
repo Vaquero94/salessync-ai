@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import type { CapturePreferences } from "@/lib/capture-preferences";
 import { StatusBar } from "@/app/dashboard/StatusBar";
@@ -48,6 +48,20 @@ export function InboxClient({
   const [exiting, setExiting] = useState<Record<string, boolean>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
   const [, startTransition] = useTransition();
+
+  const [meetingUrl, setMeetingUrl] = useState("");
+  const [joinLoading, setJoinLoading] = useState(false);
+  const [joinSuccess, setJoinSuccess] = useState(false);
+  const [joinError, setJoinError] = useState(false);
+  const joinSuccessTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const joinErrorTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (joinSuccessTimer.current) clearTimeout(joinSuccessTimer.current);
+      if (joinErrorTimer.current) clearTimeout(joinErrorTimer.current);
+    };
+  }, []);
 
   const pendingCount = pending.length;
 
@@ -103,6 +117,37 @@ export function InboxClient({
     }
   }
 
+  async function onQuickJoin() {
+    const url = meetingUrl.trim();
+    if (!url || joinLoading) return;
+    setJoinLoading(true);
+    setJoinSuccess(false);
+    setJoinError(false);
+    if (joinSuccessTimer.current) clearTimeout(joinSuccessTimer.current);
+    if (joinErrorTimer.current) clearTimeout(joinErrorTimer.current);
+    try {
+      const res = await fetch("/api/recordings/join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ meeting_url: url }),
+      });
+      if (!res.ok) {
+        setJoinError(true);
+        joinErrorTimer.current = setTimeout(() => setJoinError(false), 5000);
+        return;
+      }
+      setMeetingUrl("");
+      setJoinSuccess(true);
+      joinSuccessTimer.current = setTimeout(() => setJoinSuccess(false), 8000);
+      startTransition(() => router.refresh());
+    } catch {
+      setJoinError(true);
+      joinErrorTimer.current = setTimeout(() => setJoinError(false), 5000);
+    } finally {
+      setJoinLoading(false);
+    }
+  }
+
   async function onDismiss(extractionId: string) {
     setBusyId(extractionId);
     try {
@@ -132,6 +177,47 @@ export function InboxClient({
             </span>
           ) : null}
         </div>
+
+        <div className="mb-6">
+          <p className="mb-2 text-[11px] font-normal uppercase tracking-widest text-zinc-600">
+            Join a call
+          </p>
+          <div className="flex gap-2">
+            <input
+              type="url"
+              value={meetingUrl}
+              onChange={(e) => setMeetingUrl(e.target.value)}
+              placeholder="Paste Zoom or Google Meet link..."
+              className="min-w-0 flex-1 rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white placeholder-zinc-600 focus:border-[#7C6FFF]/50 focus:outline-none"
+            />
+            <button
+              type="button"
+              disabled={joinLoading || !meetingUrl.trim()}
+              onClick={onQuickJoin}
+              className="shrink-0 rounded-lg bg-[#7C6FFF] px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+            >
+              {joinLoading ? (
+                <span className="inline-flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Joining...
+                </span>
+              ) : (
+                "Start recording"
+              )}
+            </button>
+          </div>
+          {joinSuccess ? (
+            <p className="mt-2 text-xs text-[#86efac]">
+              ✓ Bot is joining your call — your review card will appear within 2 minutes.
+            </p>
+          ) : null}
+          {joinError ? (
+            <p className="mt-2 text-xs text-red-400">
+              Could not join — check the URL and try again.
+            </p>
+          ) : null}
+        </div>
+
         <StatusBar
           processingCount={processingCount}
           failedCount={failedCount}

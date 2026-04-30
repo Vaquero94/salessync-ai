@@ -89,21 +89,29 @@ export const crmConnections = pgTable("crm_connections", {
 
 /**
  * Call/meeting recordings and voice notes.
+ * recall_bot_id links manual/join flows to Recall.ai bots so webhooks update the same row.
  */
-export const recordings = pgTable("recordings", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  source: recordingSourceEnum("source").notNull(),
-  durationMinutes: integer("duration_minutes"),
-  transcriptText: text("transcript_text"),
-  status: recordingStatusEnum("status").default("processing").notNull(),
-  errorDetails: text("error_details"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-});
+export const recordings = pgTable(
+  "recordings",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    source: recordingSourceEnum("source").notNull(),
+    durationMinutes: integer("duration_minutes"),
+    transcriptText: text("transcript_text"),
+    status: recordingStatusEnum("status").default("processing").notNull(),
+    errorDetails: text("error_details"),
+    recallBotId: text("recall_bot_id"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (t) => ({
+    recallBotIdUnique: uniqueIndex("recordings_recall_bot_id_unique").on(t.recallBotId),
+  })
+);
 
 /**
  * AI-extracted data from recordings. Approved extractions can be pushed to CRM.

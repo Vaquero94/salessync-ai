@@ -93,11 +93,11 @@ export default async function DashboardSettingsPage({
         </div>
       )}
       {params.google_calendar === "connected" && (
-        <div className="flex items-center gap-2 rounded-lg border border-emerald-400/30 bg-emerald-400/10 p-3 text-emerald-300">
-          <CheckCircle className="h-5 w-5 shrink-0" />
-          <span>
-            Google Calendar connected. Invite bot@zeroentryai.co to meetings you want recorded; a
-            scheduled job will send the notetaker bot to those calls.
+        <div className="mb-4 flex items-start gap-2 rounded-lg border border-emerald-400/30 bg-emerald-400/10 p-3">
+          <CheckCircle className="h-5 w-5 shrink-0 text-emerald-300" />
+          <span className="text-sm text-[#86efac]">
+            Zero Entry AI will automatically join Zoom and Google Meet calls from your connected
+            calendar. For unscheduled or surprise calls, use the quick join on your dashboard.
           </span>
         </div>
       )}

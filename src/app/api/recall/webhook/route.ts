@@ -107,13 +107,33 @@ export async function POST(request: Request) {
 
   const db = createDb();
 
-  const [recording] = await db
-    .insert(recordings)
-    .values({ userId, source, status: "processing" })
-    .returning();
+  const existingByBot = await db
+    .select()
+    .from(recordings)
+    .where(eq(recordings.recallBotId, botId))
+    .limit(1);
 
-  if (!recording) {
-    return NextResponse.json({ error: "Failed to create recording" }, { status: 500 });
+  let recording = existingByBot[0];
+
+  if (recording) {
+    if (recording.userId !== userId) {
+      console.error("Recall webhook: bot userId mismatch", botId);
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+  } else {
+    const [inserted] = await db
+      .insert(recordings)
+      .values({
+        userId,
+        source,
+        status: "processing",
+        recallBotId: botId,
+      })
+      .returning();
+    if (!inserted) {
+      return NextResponse.json({ error: "Failed to create recording" }, { status: 500 });
+    }
+    recording = inserted;
   }
 
   // Transcribe

@@ -28,11 +28,17 @@ export function CalendarIntegrationsSection({
             </div>
             <div>
               <p className="text-sm font-medium text-white">Google Calendar</p>
-              <p className="mt-0.5 text-xs text-zinc-500">
-                {googleCalConnected
-                  ? `Connected ${googleConnectedAt ? googleConnectedAt.toLocaleDateString() : ""}`
-                  : "Invite bot@zeroentryai.co to meetings you want recorded"}
-              </p>
+              {googleCalConnected ? (
+                <p className="mt-0.5 text-sm text-[#86efac]">
+                  Zero Entry AI will automatically join Zoom and Google Meet calls from your
+                  connected calendar. For unscheduled or surprise calls, use the quick join on your
+                  dashboard.
+                </p>
+              ) : (
+                <p className="mt-0.5 text-xs text-zinc-500">
+                  Auto-join Zoom and Google Meet calls from your Google Calendar.
+                </p>
+              )}
             </div>
           </div>
           <div className="flex items-center">

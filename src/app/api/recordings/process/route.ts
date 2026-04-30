@@ -26,13 +26,13 @@ Return JSON with this exact structure:
 export async function POST(request: Request) {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    if (!user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+    if (authError || !user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     await ensureUserExists(user);
@@ -126,10 +126,7 @@ export async function POST(request: Request) {
           errorDetails: `Transcription failed: ${message}`,
         })
         .where(eq(recordings.id, recording.id));
-      return NextResponse.json(
-        { error: "Transcription failed", details: message },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
     }
 
     try {
@@ -180,10 +177,7 @@ export async function POST(request: Request) {
           errorDetails: `Extraction failed: ${message}`,
         })
         .where(eq(recordings.id, recording.id));
-      return NextResponse.json(
-        { error: "Extraction failed", details: message },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
     }
 
     try {
@@ -250,13 +244,7 @@ export async function POST(request: Request) {
 
             if (!result.success) {
               console.error("Auto-pilot HubSpot push failed:", result.error);
-              return NextResponse.json(
-                {
-                  error: "Auto-pilot HubSpot push failed",
-                  details: result.error ?? "Unknown HubSpot push error",
-                },
-                { status: 500 }
-              );
+              return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
             }
 
             await db
@@ -294,9 +282,6 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     console.error("Process error:", err);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

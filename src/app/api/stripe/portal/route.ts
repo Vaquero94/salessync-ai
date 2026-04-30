@@ -6,13 +6,13 @@ import { NextResponse } from "next/server";
 export async function POST() {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    if (!user?.id) {
-      return NextResponse.json(
-        { error: "You must be logged in" },
-        { status: 401 }
-      );
+    if (authError || !user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Fetch stripe_customer_id from our users table
@@ -41,9 +41,6 @@ export async function POST() {
     return NextResponse.json({ url: session.url });
   } catch (err) {
     console.error("Portal error:", err);
-    return NextResponse.json(
-      { error: "Failed to open billing portal" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

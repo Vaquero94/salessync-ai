@@ -20,8 +20,9 @@ export async function GET() {
     const supabase = await createClient();
     const {
       data: { user },
+      error: authError,
     } = await supabase.auth.getUser();
-    if (!user?.id) {
+    if (authError || !user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -36,7 +37,7 @@ export async function GET() {
     return NextResponse.json({ preferences: prefs });
   } catch (e) {
     console.error("GET preferences:", e);
-    return NextResponse.json({ error: "Failed to load preferences" }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
 
@@ -45,14 +46,15 @@ export async function PATCH(request: Request) {
     const supabase = await createClient();
     const {
       data: { user },
+      error: authError,
     } = await supabase.auth.getUser();
-    if (!user?.id) {
+    if (authError || !user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const parsed = patchSchema.safeParse(await request.json());
     if (!parsed.success) {
-      return NextResponse.json({ error: "Invalid body", details: parsed.error.flatten() }, { status: 400 });
+      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
 
     const db = createDb();
@@ -75,6 +77,6 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ success: true, preferences: merged });
   } catch (e) {
     console.error("PATCH preferences:", e);
-    return NextResponse.json({ error: "Failed to update preferences" }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

@@ -37,9 +37,12 @@ function createState(userId: string): string {
 export async function GET(request: Request) {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    if (!user?.id) {
+    if (authError || !user?.id) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 

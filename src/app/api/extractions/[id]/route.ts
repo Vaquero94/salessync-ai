@@ -13,9 +13,12 @@ export async function PATCH(
 ) {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    if (!user?.id) {
+    if (authError || !user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -125,13 +128,7 @@ export async function PATCH(
 
       if (!result.success) {
         console.error("HubSpot push failed after approval:", result.error);
-        return NextResponse.json(
-          {
-            error: "HubSpot push failed after approval",
-            details: result.error ?? "Unknown HubSpot push error",
-          },
-          { status: 500 }
-        );
+        return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
       }
 
       await db
@@ -169,9 +166,6 @@ export async function PATCH(
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Extraction update error:", err);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

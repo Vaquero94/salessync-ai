@@ -42,9 +42,14 @@ interface RecallWebhookPayload {
 export async function POST(request: Request) {
   const rawBody = await request.text();
 
-  // Verify Recall.ai webhook signature
+  if (!process.env.RECALL_WEBHOOK_SECRET) {
+    console.error("RECALL_WEBHOOK_SECRET not set");
+    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+  }
+
   const signature = request.headers.get("x-recall-signature") ?? "";
-  if (process.env.RECALL_WEBHOOK_SECRET && !verifyWebhookSignature(rawBody, signature)) {
+  if (!verifyWebhookSignature(rawBody, signature)) {
+    console.error("[Recall webhook] Invalid signature");
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 

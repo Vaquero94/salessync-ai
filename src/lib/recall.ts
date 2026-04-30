@@ -73,6 +73,9 @@ export async function createCalendarConnection(opts: {
   redirectUri: string;
   userId: string;
   webhookUrl: string;
+  recordingConfig?: {
+    audio_mixed_mp4?: Record<string, never>;
+  };
 }): Promise<string> {
   const res = await recallFetch("/v2/calendars/", {
     method: "POST",
@@ -85,7 +88,9 @@ export async function createCalendarConnection(opts: {
         bot_name: "Zero Entry AI Notetaker",
         recording_mode: "audio_only",
         metadata: { userId: opts.userId },
-        transcription_options: { provider: "default" },
+        recording_config: opts.recordingConfig ?? {
+          audio_mixed_mp4: {},
+        },
       },
     }),
   });

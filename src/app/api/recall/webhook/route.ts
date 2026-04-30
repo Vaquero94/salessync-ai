@@ -1,6 +1,6 @@
 /**
  * Recall.ai webhook receiver.
- * Handles recording.done events: transcribes audio and extracts sales data.
+ * Handles audio completion events: transcribes audio and extracts sales data.
  * This endpoint is called by Recall.ai (no user auth cookie — uses service role).
  */
 export const dynamic = "force-dynamic";
@@ -11,7 +11,7 @@ import { createOpenAIClient } from "@/lib/openai";
 import { createDb } from "@/db";
 import { recordings, extractions } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { verifyWebhookSignature, getBotAudioUrl } from "@/lib/recall";
+import { verifyWebhookSignature } from "@/lib/recall";
 import { NextResponse } from "next/server";
 
 const EXTRACTION_SYSTEM_PROMPT = `You are a sales call data extractor. Given a transcript, extract: contacts (name, role, company, email), deal info (value, stage change, close date), action items (owner, task, due date), objections, a 2-sentence summary, and sentiment. Return valid JSON only. If a field was not mentioned, set it to null. Never guess.
@@ -29,12 +29,25 @@ Return JSON with this exact structure:
 interface RecallWebhookPayload {
   event: string;
   data: {
+    id?: string;
+    metadata?: Record<string, unknown>;
     bot?: {
       id: string;
       metadata?: Record<string, unknown>;
       meeting_url?: string;
       platform?: string;
     };
+    recordings?: Array<{
+      media_shortcuts?: {
+        audio_mixed?: { data?: { download_url?: string } };
+        video_mixed?: { data?: { download_url?: string } };
+      };
+    }>;
+    calendar_meetings?: Array<{
+      calendar_user?: {
+        external_id?: string;
+      };
+    }>;
     bot_id?: string;
   };
 }
@@ -60,28 +73,55 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  // Only process completed recordings
-  if (payload.event !== "recording.done") {
+  const eventType = payload.event;
+
+  // Process events that can carry mixed audio/video output links.
+  if (eventType !== "audio_mixed.done" && eventType !== "bot.done") {
     return NextResponse.json({ received: true });
   }
 
-  const bot = payload.data.bot;
-  const botId = bot?.id ?? payload.data.bot_id;
+  const botData = payload.data;
+  const bot = botData.bot;
+  const botId = bot?.id ?? botData.bot_id ?? botData.id;
 
   if (!botId) {
     console.error("Recall webhook: missing bot id", payload);
     return NextResponse.json({ error: "Missing bot id" }, { status: 400 });
   }
 
-  // Extract userId stored in bot metadata at calendar-connection time
-  const userId = bot?.metadata?.userId as string | undefined;
+  // Try audio_mixed first; fallback to video_mixed for older test calls.
+  const audioUrl =
+    botData.recordings?.[0]?.media_shortcuts?.audio_mixed?.data?.download_url ??
+    botData.recordings?.[0]?.media_shortcuts?.video_mixed?.data?.download_url;
+  if (!audioUrl) {
+    console.log("[Webhook] No audio URL found");
+    return NextResponse.json({ received: true });
+  }
+
+  const metadataUserId =
+    (botData.metadata?.userId as string | undefined) ??
+    (bot?.metadata?.userId as string | undefined);
+  const calendarUserEmail =
+    botData.calendar_meetings?.[0]?.calendar_user?.external_id;
+
+  const admin = createAdminClient();
+
+  let userId = metadataUserId;
+  if (!userId && calendarUserEmail) {
+    const { data: calendarUser } = await admin
+      .from("users")
+      .select("id")
+      .eq("email", calendarUserEmail)
+      .single();
+    userId = calendarUser?.id;
+  }
+
   if (!userId) {
-    console.error("Recall webhook: missing userId in bot metadata", botId);
-    return NextResponse.json({ error: "Missing userId in bot metadata" }, { status: 400 });
+    console.error("Recall webhook: missing userId (metadata + calendar lookup)", botId);
+    return NextResponse.json({ received: true, skipped: "missing_user" });
   }
 
   // Check user exists and has an active subscription
-  const admin = createAdminClient();
   const { data: appUser } = await admin
     .from("users")
     .select("subscription_status")
@@ -91,13 +131,6 @@ export async function POST(request: Request) {
   if (!appUser || appUser.subscription_status === "free") {
     console.warn(`Recall webhook: user ${userId} has no active subscription — skipping`);
     return NextResponse.json({ received: true, skipped: "no_subscription" });
-  }
-
-  // Fetch audio URL from Recall.ai
-  const audioUrl = await getBotAudioUrl(botId);
-  if (!audioUrl) {
-    console.error(`Recall webhook: could not get audio URL for bot ${botId}`);
-    return NextResponse.json({ error: "No audio URL available" }, { status: 422 });
   }
 
   const platform = (bot?.platform ?? "zoom").toLowerCase();

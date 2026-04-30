@@ -108,11 +108,7 @@ export async function POST(request: Request) {
         bot_name: "zeroentryai Notetaker",
         metadata: { userId: user.id },
         recording_config: {
-          transcript: {
-            provider: {
-              meeting_captions: {},
-            },
-          },
+          audio_mixed_mp4: {},
         },
       }),
     });

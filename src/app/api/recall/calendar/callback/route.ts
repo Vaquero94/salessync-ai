@@ -88,6 +88,9 @@ export async function GET(request: Request) {
       redirectUri: redirectUri.toString(),
       userId,
       webhookUrl,
+      recordingConfig: {
+        audio_mixed_mp4: {},
+      },
     });
 
     const db = createDb();

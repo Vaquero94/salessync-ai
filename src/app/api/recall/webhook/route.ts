@@ -60,7 +60,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
   }
 
-  const signature = request.headers.get("x-recall-signature") ?? "";
+  const signatureHeader = request.headers.get("webhook-signature") ?? "";
+  const signature = signatureHeader.startsWith("v1,")
+    ? signatureHeader.slice(3)
+    : signatureHeader;
+  console.log("[Recall webhook] timestamp:", request.headers.get("webhook-timestamp"));
   if (!verifyWebhookSignature(rawBody, signature)) {
     console.error("[Recall webhook] Invalid signature");
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });

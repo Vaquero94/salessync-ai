@@ -176,7 +176,8 @@ export async function getBotAudioUrl(botId: string): Promise<string | null> {
 
 /**
  * Verifies a Recall.ai webhook HMAC-SHA256 signature.
- * Header format: "sha256=<hex_digest>"
+ * Header format (Recall.ai): "v1,<base64_signature>".
+ * Caller should pass only the base64 signature part.
  */
 export function verifyWebhookSignature(
   rawBody: string,
@@ -184,8 +185,8 @@ export function verifyWebhookSignature(
 ): boolean {
   const secret = process.env.RECALL_WEBHOOK_SECRET;
   if (!secret) return false;
-  const expected = `sha256=${createHmac("sha256", secret)
+  const expected = createHmac("sha256", secret)
     .update(rawBody)
-    .digest("hex")}`;
+    .digest("base64");
   return signatureHeader === expected;
 }

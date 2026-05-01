@@ -185,6 +185,12 @@ export function verifyWebhookSignature(
 ): boolean {
   const secret = process.env.RECALL_WEBHOOK_SECRET;
 
+  console.log(
+    "[Recall sig] secret first 10 chars:",
+    secret ? secret.substring(0, 10) : "MISSING"
+  );
+  console.log("[Recall sig] secret last 4 chars:", secret ? secret.slice(-4) : "MISSING");
+
   if (!secret) {
     console.error("[Recall sig] RECALL_WEBHOOK_SECRET is not set");
     return false;

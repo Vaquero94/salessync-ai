@@ -196,7 +196,13 @@ export function verifyWebhookSignature(
     return false;
   }
 
-  const expected = createHmac("sha256", secret)
+  // Recall.ai secrets starting with whsec_ need to be decoded from base64.
+  let signingKey: string | Buffer = secret;
+  if (secret.startsWith("whsec_")) {
+    signingKey = Buffer.from(secret.slice(6), "base64");
+  }
+
+  const expected = createHmac("sha256", signingKey)
     .update(rawBody)
     .digest("base64");
 

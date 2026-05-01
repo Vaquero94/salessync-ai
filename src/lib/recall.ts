@@ -181,12 +181,24 @@ export async function getBotAudioUrl(botId: string): Promise<string | null> {
  */
 export function verifyWebhookSignature(
   rawBody: string,
-  signatureHeader: string
+  signature: string
 ): boolean {
   const secret = process.env.RECALL_WEBHOOK_SECRET;
-  if (!secret) return false;
+
+  if (!secret) {
+    console.error("[Recall sig] RECALL_WEBHOOK_SECRET is not set");
+    return false;
+  }
+
   const expected = createHmac("sha256", secret)
     .update(rawBody)
     .digest("base64");
-  return signatureHeader === expected;
+
+  console.log("[Recall sig] received:", signature);
+  console.log("[Recall sig] expected:", expected);
+  console.log("[Recall sig] secret length:", secret.length);
+  console.log("[Recall sig] body length:", rawBody.length);
+  console.log("[Recall sig] match:", signature === expected);
+
+  return signature === expected;
 }
